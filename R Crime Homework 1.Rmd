@@ -1,0 +1,250 @@
+---
+title: "Homework N1 Crime"
+author: "Arman Manukyan"
+date: "2025-02-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = FALSE)
+options(tinytex.verbose = TRUE)
+
+options(scipen = 999)
+
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(knitr)
+library(reticulate)
+library(lubridate)
+library(GGally)
+```
+
+
+```{r Loading a data file}
+# Load the data file interactively, keeping the original code style
+crime.data <- read.table(file.choose(), header = FALSE, sep = ",", quote = "\"", 
+                      stringsAsFactors = FALSE, fileEncoding = "ISO-8859-1")
+# Assign column name since the dataset lacks one
+colnames(crime.data) <- c("Value")
+
+# Display first few rows and summary
+head(crime.data)
+summary(crime.data)
+
+# Open the data frame viewer
+View(crime.data)
+
+```
+Identify columns with missing values and their respective counts. Drop columns where more than
+50% of the data is missing (store this version as a new dataset).
+
+```{r Identify and Remove Missing Values}
+# Identify columns with missing values and their respective counts
+missing_counts <- colSums(is.na(crime.data))
+
+# Display missing values count per column
+print(missing_counts)
+
+# Define the threshold (50% missing values)
+threshold <- 0.5 * nrow(crime.data)
+
+# Drop columns with more than 50% missing values
+crime.cleaned <- crime.data[, colSums(is.na(crime.data)) <= threshold]
+
+# Save the cleaned dataset as a CSV file
+write.csv(crime.cleaned, "crime_cleaned.csv", row.names = FALSE)
+
+# Provide a download link
+cat("Download the cleaned dataset: [crime_cleaned.csv](crime_cleaned.csv)")
+
+```
+Convert the DATE OCC column to a datetime format. Extract the year, month, and day into separate
+columns. Create a new column for the hour using the TIME OCC column
+
+
+```{r Convert and Extract Date-Time Components}
+# Ensure the first row is treated as column names
+colnames(crime.cleaned) <- as.character(crime.cleaned[1, ])
+crime.cleaned <- crime.cleaned[-1, ]
+
+# Convert 'DATE OCC' column to a date format using as.Date()
+crime.cleaned$`DATE OCC` <- as.Date(crime.cleaned$`DATE OCC`, format = "%m/%d/%Y")
+
+# Extract year, month, and day into separate columns
+crime.cleaned$Year <- format(crime.cleaned$`DATE OCC`, "%Y")
+crime.cleaned$Month <- format(crime.cleaned$`DATE OCC`, "%m")
+crime.cleaned$Day <- format(crime.cleaned$`DATE OCC`, "%d")
+
+# Convert 'TIME OCC' column to an hour column
+crime.cleaned$Hour <- as.numeric(substr(crime.cleaned$`TIME OCC`, 1, 2))
+
+# Display the first few rows of the updated dataset
+head(crime.cleaned)
+
+# View the updated dataset
+View(crime.cleaned)
+
+```
+Filter the dataset for crimes that occurred in 2023. Further filter crimes with the description
+BURGLARY in the Crm Cd Desc column.
+```{r Filter Data for 2023 and BURGLARY Crimes}
+# Ensure 'Year' column is numeric for filtering
+crime.cleaned$Year <- as.numeric(crime.cleaned$Year)
+
+# Filter dataset for crimes that occurred in 2023
+crime.2023 <- subset(crime.cleaned, Year == 2023)
+
+# Further filter for crimes with description 'BURGLARY' in the 'Crm Cd Desc' column
+crime.burglary.2023 <- subset(crime.2023, `Crm Cd Desc` == "BURGLARY")
+
+# Display the first few rows of the filtered dataset
+head(crime.burglary.2023)
+
+# View the filtered dataset
+View(crime.burglary.2023)
+
+```
+Group the data by AREA NAME and calculate the total number of crimes and the average victim age.
+Sort the results by total crimes in descending order.
+
+```{r Group Data by AREA NAME and Analyze}
+
+# Ensure 'Vict Age' is numeric for calculations
+crime.cleaned$`Vict Age` <- as.numeric(crime.cleaned$`Vict Age`)
+
+# Group by AREA NAME, calculate total number of crimes and average victim age
+crime_summary <- crime.cleaned %>%
+  group_by(`AREA NAME`) %>%
+  summarise(Total_Crimes = n(),
+            Avg_Victim_Age = mean(`Vict Age`, na.rm = TRUE)) %>%
+  arrange(desc(Total_Crimes))  # Sort by total crimes in descending order
+
+# Display the summary dataset
+head(crime_summary)
+
+# View the grouped summary dataset
+View(crime_summary)
+
+```
+
+Part 3: Further Exploration (R only) 5 points per problem
+Group the data by Month and count the number of crimes.
+2. Count the number of crimes where a weapon was used (Weapon Used Cd is not null).
+3. Group the data by Premis Desc and count the number of crimes.
+
+```{r Group and Count Crimes by Month, Weapon Used, and Premises}
+# 1. Group the data by Month and count the number of crimes
+crime_by_month <- crime.cleaned %>%
+  group_by(Month) %>%
+  summarise(Total_Crimes = n()) %>%
+  arrange(Month)  # Ensure sorting by month order
+
+# Display the first few rows
+head(crime_by_month)
+
+# View the grouped dataset
+View(crime_by_month)
+
+
+# 2. Count the number of crimes where a weapon was used (Weapon Used Cd is not null)
+weapon_used_crimes <- crime.cleaned %>%
+  filter(!is.na(`Weapon Used Cd`)) %>%
+  summarise(Total_Weapon_Crimes = n())
+
+# Display the result
+print(weapon_used_crimes)
+View(weapon_used_crimes)
+
+# 3. Group the data by Premis Desc and count the number of crimes
+crime_by_premises <- crime.cleaned %>%
+  group_by(`Premis Desc`) %>%
+  summarise(Total_Crimes = n()) %>%
+  arrange(desc(Total_Crimes))  # Sort in descending order
+
+# Display the first few rows
+head(crime_by_premises)
+
+# View the grouped dataset
+View(crime_by_premises)
+
+```
+
+Part 4: Advanced Analysis (Python & R) 20 points per problem: 10 for Python and 10 for R
+1. Create a new column, Severity Score, based on the following rules:
+• Assign 5 points if a weapon was used (Weapon Used Cd is not null).
+• Assign 3 points for crimes under BURGLARY.
+• Assign 1 point for all other crimes.
+• Group by AREA NAME and find the total severity score for each area.
+
+```{r Calculate Severity Score and Group by AREA NAME}
+# Ensure Weapon Used Cd is treated correctly for missing values
+crime.cleaned$`Weapon Used Cd` <- as.character(crime.cleaned$`Weapon Used Cd`)
+
+# Assign default Severity Score of 1
+crime.cleaned$Severity_Score <- 1
+
+# Assign 3 points for BURGLARY crimes
+crime.cleaned$Severity_Score[crime.cleaned$`Crm Cd Desc` == "BURGLARY"] <- 
+  crime.cleaned$Severity_Score[crime.cleaned$`Crm Cd Desc` == "BURGLARY"] + 3
+
+# Assign 5 points if a weapon was used (Weapon Used Cd is not null)
+crime.cleaned$Severity_Score[!is.na(crime.cleaned$`Weapon Used Cd`)] <- 
+  crime.cleaned$Severity_Score[!is.na(crime.cleaned$`Weapon Used Cd`)] + 5
+
+# Group by AREA NAME and calculate total severity score
+severity_by_area <- crime.cleaned %>%
+  group_by(`AREA NAME`) %>%
+  summarise(Total_Severity_Score = sum(Severity_Score)) %>%
+  arrange(desc(Total_Severity_Score))
+# Display results
+head(severity_by_area)
+# View dataset
+View(severity_by_area)
+
+```
+
+Bonus Part: 5 points
+Use the LAT and LON columns to identify crimes that occurred within a specific latitude-longitude bounding
+box (e.g., downtown area).
+
+```{r Filter Crimes by Latitude and Longitude}
+# Convert LAT and LON to numeric (if necessary)
+crime.cleaned$LAT <- as.numeric(crime.cleaned$LAT)
+crime.cleaned$LON <- as.numeric(crime.cleaned$LON)
+
+# Define the bounding box (example: downtown area)
+lat_min <- 34.04
+lat_max <- 34.07
+lon_min <- -118.27
+lon_max <- -118.23
+
+# Filter the dataset based on the bounding box
+crime_downtown <- crime.cleaned %>%
+  filter(LAT >= lat_min & LAT <= lat_max & LON >= lon_min & LON <= lon_max)
+
+# Display results
+head(crime_downtown)
+
+# View the dataset
+View(crime_downtown)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
