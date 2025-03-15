@@ -1,0 +1,1854 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Homework 3},
+  pdfauthor={Arman Manukyan},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Homework 3}
+\author{Arman Manukyan}
+\date{2025-03-09}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset}\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"mobiles\_dataset.csv"}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(mobiles\_dataset)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Company.Name           Model.Name Mobile.Weight RAM Front.Camera Back.Camera
+## 1        Apple      iPhone 16 128GB          174g 6GB         12MP        48MP
+## 2        Apple      iPhone 16 256GB          174g 6GB         12MP        48MP
+## 3        Apple      iPhone 16 512GB          174g 6GB         12MP        48MP
+## 4        Apple iPhone 16 Plus 128GB          203g 6GB         12MP        48MP
+## 5        Apple iPhone 16 Plus 256GB          203g 6GB         12MP        48MP
+## 6        Apple iPhone 16 Plus 512GB          203g 6GB         12MP        48MP
+##    Processor Battery.Capacity.mAh Screen.Size.inches
+## 1 A17 Bionic                 3600                6.1
+## 2 A17 Bionic                 3600                6.1
+## 3 A17 Bionic                 3600                6.1
+## 4 A17 Bionic                 4200                6.7
+## 5 A17 Bionic                 4200                6.7
+## 6 A17 Bionic                 4200                6.7
+##   Launched.Price.Pakistan.PKR Launched.Price.India.INR Launched.Price.China.CNY
+## 1                      224999                    79999                     5799
+## 2                      234999                    84999                     6099
+## 3                      244999                    89999                     6499
+## 4                      249999                    89999                     6199
+## 5                      259999                    94999                     6499
+## 6                      274999                   104999                     6999
+##   Launched.Price.USA.USD Launched.Price.Dubai.AED Launched.Year
+## 1                    799                     2799          2024
+## 2                    849                     2999          2024
+## 3                    899                     3199          2024
+## 4                    899                     3199          2024
+## 5                    949                     3399          2024
+## 6                    999                     3599          2024
+\end{verbatim}
+
+Part 1: Analytical Questions (Python \& R) Hint: Convert all the
+currencies to dollars using the following logic: 1 PKR = 0.0036 USD 1
+INR = 0.011 USD 1 CNY = 0.14 USD 1 AED = 0.27 USD
+
+1.Does battery capacity influence the launched price of a smartphone?
+Check this variability across all currencies. Is there any type of
+difference between behaviors?
+
+2.Does RAM size impact the price of smartphones? Check this variability
+across all currencies. Is there any type of difference between
+behaviors?
+
+3.Do Apple devices have a higher price variation across different
+regions compared to other brands? In which country do Apple devices have
+the highest markup? Are there brands with more stable pricing across
+regions?
+
+4.Do all smartphone brands have flagship and budget-friendly models, or
+do some brands only focus on premium devices? Hint: Categorize brands
+into budget, mid-range, and premium segments (Budget: \textless{} \$300,
+Mid-range: \$300 - \$700, Premium: \textgreater{} \$700). Check how many
+models each brand has in each segment. Determine whether a brand covers
+all three segments or focuses only on premium/mid-range.
+
+5.Which region offers the most affordable smartphone prices on average?
+Are there any brands that price their phones significantly lower in one
+region compared to others?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Launched.Price.USA.USD =}\NormalTok{ Launched.Price.USA.USD,}
+    \AttributeTok{Launched.Price.Pakistan.PKR =}\NormalTok{ Launched.Price.Pakistan.PKR }\SpecialCharTok{*} \FloatTok{0.0036}\NormalTok{,}
+    \AttributeTok{Launched.Price.India.INR =}\NormalTok{ Launched.Price.India.INR }\SpecialCharTok{*} \FloatTok{0.011}\NormalTok{,}
+    \AttributeTok{Launched.Price.China.CNY =}\NormalTok{ Launched.Price.China.CNY }\SpecialCharTok{*} \FloatTok{0.14}\NormalTok{,}
+    \AttributeTok{Launched.Price.Dubai.AED =}\NormalTok{ Launched.Price.Dubai.AED }\SpecialCharTok{*} \FloatTok{0.27}
+\NormalTok{  )}
+
+\FunctionTok{head}\NormalTok{(mobiles\_dataset)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Company.Name           Model.Name Mobile.Weight RAM Front.Camera Back.Camera
+## 1        Apple      iPhone 16 128GB          174g 6GB         12MP        48MP
+## 2        Apple      iPhone 16 256GB          174g 6GB         12MP        48MP
+## 3        Apple      iPhone 16 512GB          174g 6GB         12MP        48MP
+## 4        Apple iPhone 16 Plus 128GB          203g 6GB         12MP        48MP
+## 5        Apple iPhone 16 Plus 256GB          203g 6GB         12MP        48MP
+## 6        Apple iPhone 16 Plus 512GB          203g 6GB         12MP        48MP
+##    Processor Battery.Capacity.mAh Screen.Size.inches
+## 1 A17 Bionic                 3600                6.1
+## 2 A17 Bionic                 3600                6.1
+## 3 A17 Bionic                 3600                6.1
+## 4 A17 Bionic                 4200                6.7
+## 5 A17 Bionic                 4200                6.7
+## 6 A17 Bionic                 4200                6.7
+##   Launched.Price.Pakistan.PKR Launched.Price.India.INR Launched.Price.China.CNY
+## 1                    809.9964                  879.989                   811.86
+## 2                    845.9964                  934.989                   853.86
+## 3                    881.9964                  989.989                   909.86
+## 4                    899.9964                  989.989                   867.86
+## 5                    935.9964                 1044.989                   909.86
+## 6                    989.9964                 1154.989                   979.86
+##   Launched.Price.USA.USD Launched.Price.Dubai.AED Launched.Year
+## 1                    799                   755.73          2024
+## 2                    849                   809.73          2024
+## 3                    899                   863.73          2024
+## 4                    899                   863.73          2024
+## 5                    949                   917.73          2024
+## 6                    999                   971.73          2024
+\end{verbatim}
+
+1.Does battery capacity influence the launched price of a smartphone?
+Check this variability across all currencies. Is there any type of
+difference between behaviors?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs. Launched Price (USD)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.Pakistan.PKR)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs. Launched Price (PKR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.India.INR)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{col =} \StringTok{"green"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs.Launched Price (INR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-3-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.China.CNY)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{col =} \StringTok{"purple"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs. Launched Price (CNY)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-3-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.Dubai.AED)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{col =} \StringTok{"orange"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs. Launched Price (AED)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-3-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.Pakistan.PKR, }\AttributeTok{color =} \StringTok{"PKR to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.India.INR, }\AttributeTok{color =} \StringTok{"INR to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.China.CNY, }\AttributeTok{color =} \StringTok{"CNY to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =} \StringTok{"USA USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.Dubai.AED, }\AttributeTok{color =} \StringTok{"AED to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Battery Capacity vs. Launched Price (USD)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"blue"}\NormalTok{, }\StringTok{"green"}\NormalTok{, }\StringTok{"purple"}\NormalTok{, }\StringTok{"orange"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{correlations }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(Battery.Capacity.mAh, Launched.Price.Pakistan.PKR,  Launched.Price.India.INR, Launched.Price.China.CNY, Launched.Price.Dubai.AED, }\StringTok{\textasciigrave{}}\AttributeTok{Launched.Price.USA.USD}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{cor}\NormalTok{(}\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(correlations)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                             Battery.Capacity.mAh Launched.Price.Pakistan.PKR
+## Battery.Capacity.mAh                  1.00000000                 -0.06091272
+## Launched.Price.Pakistan.PKR          -0.06091272                  1.00000000
+## Launched.Price.India.INR             -0.01905429                  0.90383120
+## Launched.Price.China.CNY             -0.04104334                  0.90235380
+## Launched.Price.Dubai.AED             -0.04890776                  0.89856277
+## Launched.Price.USA.USD               -0.04113680                  0.89773898
+##                             Launched.Price.India.INR Launched.Price.China.CNY
+## Battery.Capacity.mAh                     -0.01905429              -0.04104334
+## Launched.Price.Pakistan.PKR               0.90383120               0.90235380
+## Launched.Price.India.INR                  1.00000000               0.96719396
+## Launched.Price.China.CNY                  0.96719396               1.00000000
+## Launched.Price.Dubai.AED                  0.96895235               0.96929083
+## Launched.Price.USA.USD                    0.96913458               0.96820319
+##                             Launched.Price.Dubai.AED Launched.Price.USA.USD
+## Battery.Capacity.mAh                     -0.04890776             -0.0411368
+## Launched.Price.Pakistan.PKR               0.89856277              0.8977390
+## Launched.Price.India.INR                  0.96895235              0.9691346
+## Launched.Price.China.CNY                  0.96929083              0.9682032
+## Launched.Price.Dubai.AED                  1.00000000              0.9902623
+## Launched.Price.USA.USD                    0.99026235              1.0000000
+\end{verbatim}
+
+Findings from the Graphs and analysis : \emph{The scatter plots show a
+very weak or no clear correlation between Battery Capacity (mAh) and
+Price (USD). }The trend lines (regression lines) in each graph are
+almost flat or slightly declining, meaning battery capacity does not
+significantly influence price. *Regardless of the currency (PKR, INR,
+CNY, AED, USD all converted to USD , the trend remains similar---battery
+capacity does not seem to be a strong determinant of price.
+
+Variability across all currencies
+
+\emph{The trend appears consistent across all currencies (converted to
+USD). }Some outliers exist, where phones with smaller batteries have
+high prices (likely due to premium brands or advanced features). The
+price distribution is quite scattered, confirming that other factors
+besides battery capacity (such as brand, camera, and processor)
+influence smartphone pricing more significantly.
+
+Conclusion: Battery capacity does NOT strongly influence the launched
+price of a smartphone. The trend is consistent across different
+currencies, meaning battery size does not impact pricing differently in
+different regions.
+
+2.Does RAM size impact the price of smartphones? Check this variability
+across all currencies. Is there any type of difference between
+behaviors?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (USD)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.Pakistan.PKR)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (PKR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-6-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.India.INR)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (INR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-6-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.China.CNY)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (CNY)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-6-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.Dubai.AED)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (AED)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-6-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.factor}\NormalTok{(RAM), }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{fill =} \FunctionTok{as.factor}\NormalTok{(RAM))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Paired"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (USD)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.factor}\NormalTok{(RAM), }\AttributeTok{y =}\NormalTok{ Launched.Price.Pakistan.PKR, }\AttributeTok{fill =} \FunctionTok{as.factor}\NormalTok{(RAM))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Paired"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (PKR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-7-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.factor}\NormalTok{(RAM), }\AttributeTok{y =}\NormalTok{ Launched.Price.India.INR, }\AttributeTok{fill =} \FunctionTok{as.factor}\NormalTok{(RAM))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Paired"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (INR)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-7-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.factor}\NormalTok{(RAM), }\AttributeTok{y =}\NormalTok{ Launched.Price.China.CNY, }\AttributeTok{fill =} \FunctionTok{as.factor}\NormalTok{(RAM))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Paired"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (CNY)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-7-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{as.factor}\NormalTok{(RAM), }\AttributeTok{y =}\NormalTok{ Launched.Price.Dubai.AED, }\AttributeTok{fill =} \FunctionTok{as.factor}\NormalTok{(RAM))) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Paired"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (AED)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Launched Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-7-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.Pakistan.PKR, }\AttributeTok{color =} \StringTok{"PKR to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.India.INR, }\AttributeTok{color =} \StringTok{"INR to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.China.CNY, }\AttributeTok{color =} \StringTok{"CNY to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =} \StringTok{"USA USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Launched.Price.Dubai.AED, }\AttributeTok{color =} \StringTok{"AED to USD"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RAM Size vs. Launched Price (USD)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"blue"}\NormalTok{, }\StringTok{"green"}\NormalTok{, }\StringTok{"black"}\NormalTok{, }\StringTok{"orange"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(mobiles\_dataset)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    925 obs. of  15 variables:
+##  $ Company.Name               : chr  "Apple" "Apple" "Apple" "Apple" ...
+##  $ Model.Name                 : chr  "iPhone 16 128GB" "iPhone 16 256GB" "iPhone 16 512GB" "iPhone 16 Plus 128GB" ...
+##  $ Mobile.Weight              : chr  "174g" "174g" "174g" "203g" ...
+##  $ RAM                        : chr  "6GB" "6GB" "6GB" "6GB" ...
+##  $ Front.Camera               : chr  "12MP" "12MP" "12MP" "12MP" ...
+##  $ Back.Camera                : chr  "48MP" "48MP" "48MP" "48MP" ...
+##  $ Processor                  : chr  "A17 Bionic" "A17 Bionic" "A17 Bionic" "A17 Bionic" ...
+##  $ Battery.Capacity.mAh       : int  3600 3600 3600 4200 4200 4200 4400 4400 4400 4500 ...
+##  $ Screen.Size.inches         : num  6.1 6.1 6.1 6.7 6.7 6.7 6.1 6.1 6.1 6.7 ...
+##  $ Launched.Price.Pakistan.PKR: num  810 846 882 900 936 ...
+##  $ Launched.Price.India.INR   : num  880 935 990 990 1045 ...
+##  $ Launched.Price.China.CNY   : num  812 854 910 868 910 ...
+##  $ Launched.Price.USA.USD     : int  799 849 899 899 949 999 999 1049 1099 1099 ...
+##  $ Launched.Price.Dubai.AED   : num  756 810 864 864 918 ...
+##  $ Launched.Year              : int  2024 2024 2024 2024 2024 2024 2024 2024 2024 2024 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{RAM =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"GB"}\NormalTok{, }\StringTok{""}\NormalTok{, RAM)))  }
+\NormalTok{correlations }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(RAM, Launched.Price.Pakistan.PKR, Launched.Price.India.INR, }
+\NormalTok{         Launched.Price.China.CNY, Launched.Price.Dubai.AED, }\StringTok{\textasciigrave{}}\AttributeTok{Launched.Price.USA.USD}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{cor}\NormalTok{(}\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(correlations)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                   RAM Launched.Price.Pakistan.PKR
+## RAM                         1.0000000                   0.4091150
+## Launched.Price.Pakistan.PKR 0.4091150                   1.0000000
+## Launched.Price.India.INR    0.4169188                   0.9040471
+## Launched.Price.China.CNY    0.4227330                   0.9029307
+## Launched.Price.Dubai.AED    0.4739097                   0.8987959
+## Launched.Price.USA.USD      0.4628016                   0.8979527
+##                             Launched.Price.India.INR Launched.Price.China.CNY
+## RAM                                        0.4169188                0.4227330
+## Launched.Price.Pakistan.PKR                0.9040471                0.9029307
+## Launched.Price.India.INR                   1.0000000                0.9670840
+## Launched.Price.China.CNY                   0.9670840                1.0000000
+## Launched.Price.Dubai.AED                   0.9688035                0.9691688
+## Launched.Price.USA.USD                     0.9689838                0.9680884
+##                             Launched.Price.Dubai.AED Launched.Price.USA.USD
+## RAM                                        0.4739097              0.4628016
+## Launched.Price.Pakistan.PKR                0.8987959              0.8979527
+## Launched.Price.India.INR                   0.9688035              0.9689838
+## Launched.Price.China.CNY                   0.9691688              0.9680884
+## Launched.Price.Dubai.AED                   1.0000000              0.9902166
+## Launched.Price.USA.USD                     0.9902166              1.0000000
+\end{verbatim}
+
+The analysis indicates that RAM size has a significant impact on
+smartphone prices across all currencies. The correlation values show a
+moderate to strong relationship between RAM and price, with higher RAM
+models generally costing more. This trend is consistent in all
+currencies, including USD, PKR, INR, CNY, and AED, confirming that RAM
+is a key factor influencing smartphone pricing.
+
+From the boxplots,I observe that smartphones with lower RAM (1GB--3GB)
+are considerably cheaper, whereas devices with higher RAM (8GB, 12GB,
+and 16GB) are significantly more expensive. Additionally, the price
+variability increases as RAM size increases, suggesting that higher RAM
+devices often belong to premium flagship categories, which include
+additional features such as better processors, superior camera systems,
+and enhanced display technologies.
+
+While the overall pattern remains the same across different currencies,
+there are some variations in pricing behavior. Prices in USD appear more
+stable, whereas PKR, INR, and CNY show greater dispersion, likely due to
+regional pricing strategies, import duties, and currency fluctuations.
+The wider interquartile range (IQR) for higher RAM models suggests that
+certain brands price their flagship devices significantly higher than
+others. Moreover, outliers exist at both low and high RAM levels,
+indicating that some budget devices have unexpectedly high prices, while
+some flagship devices reach premium price points.
+
+In conclusion, RAM size plays a strong role in determining smartphone
+prices, but it is not the sole factor. While higher RAM is generally
+associated with higher prices, other components like the brand,
+processor and additional features also influence pricing variations
+within the same RAM category.
+
+3.Do Apple devices have a higher price variation across different
+regions compared to other brands? In which country do Apple devices have
+the highest markup? Are there brands with more stable pricing across
+regions?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{colnames}\NormalTok{(mobiles\_dataset)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "Company.Name"                "Model.Name"                 
+##  [3] "Mobile.Weight"               "RAM"                        
+##  [5] "Front.Camera"                "Back.Camera"                
+##  [7] "Processor"                   "Battery.Capacity.mAh"       
+##  [9] "Screen.Size.inches"          "Launched.Price.Pakistan.PKR"
+## [11] "Launched.Price.India.INR"    "Launched.Price.China.CNY"   
+## [13] "Launched.Price.USA.USD"      "Launched.Price.Dubai.AED"   
+## [15] "Launched.Year"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{price\_columns }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"Launched.Price.Pakistan.PKR"}\NormalTok{, }
+  \StringTok{"Launched.Price.India.INR"}\NormalTok{, }
+  \StringTok{"Launched.Price.USA.USD"}\NormalTok{, }
+  \StringTok{"Launched.Price.China.CNY"}\NormalTok{, }
+  \StringTok{"Launched.Price.Dubai.AED"}
+\NormalTok{)}
+
+\NormalTok{mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Price\_Variation }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(mobiles\_dataset[, price\_columns], }\DecValTok{1}\NormalTok{, sd, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{brand\_variation }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Company.Name) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Average\_Price\_Variation =} \FunctionTok{mean}\NormalTok{(Price\_Variation, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Average\_Price\_Variation))}
+
+\FunctionTok{ggplot}\NormalTok{(brand\_variation, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Company.Name, }\SpecialCharTok{{-}}\NormalTok{Average\_Price\_Variation), }\AttributeTok{y =}\NormalTok{ Average\_Price\_Variation)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Brand"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average Price Variation (USD)"}\NormalTok{, }\AttributeTok{title =} \StringTok{"Price Variation Across Different Regions by Brand"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{apple\_prices }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Company.Name }\SpecialCharTok{==} \StringTok{"Apple"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(price\_columns), mean, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\NormalTok{apple\_markup }\OtherTok{\textless{}{-}}\NormalTok{ (apple\_prices }\SpecialCharTok{{-}}\NormalTok{ apple\_prices}\SpecialCharTok{$}\NormalTok{Launched.Price.USA.USD) }\SpecialCharTok{/}\NormalTok{ apple\_prices}\SpecialCharTok{$}\NormalTok{Launched.Price.USA.USD }\SpecialCharTok{*} \DecValTok{100}
+
+\NormalTok{highest\_markup\_country }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}\FunctionTok{which.max}\NormalTok{(apple\_markup))}
+\NormalTok{highest\_markup\_value }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(apple\_markup, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Country with the highest markup for Apple devices:"}\NormalTok{, highest\_markup\_country, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Country with the highest markup for Apple devices: Launched.Price.India.INR
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Highest markup percentage:"}\NormalTok{, highest\_markup\_value, }\StringTok{"\%"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Highest markup percentage: 10.16058 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stable\_brands }\OtherTok{\textless{}{-}}\NormalTok{ brand\_variation }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(Average\_Price\_Variation) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{head}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(stable\_brands)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 2
+##   Company.Name Average_Price_Variation
+##   <chr>                          <dbl>
+## 1 Nokia                           16.9
+## 2 Realme                          19.6
+## 3 Poco                            22.4
+## 4 Infinix                         38.1
+## 5 POCO                            47.6
+\end{verbatim}
+
+Apple devices do exhibit a high price variation across regions, but they
+are not the highest. Huawei has the highest average price variation
+among brands. Apple ranks among the top brands with significant price
+differences across regions. From the price variation data, Apple's
+average price variation is lower than Huawei but higher than many other
+brands. The visualization confirms that Apple has one of the most
+fluctuating prices globally, though not the most extreme.
+
+In which country do Apple devices have the highest markup?
+
+The highest markup for Apple devices occurs in India.
+
+The markup percentage in India is 10.16\%, which is the highest among
+all regions. This suggests that Apple products are priced significantly
+higher in India compared to their base price in the USA. Are there
+brands with more stable pricing across regions? Yes, some brands have
+much more stable pricing across different regions.
+
+Nokia has the lowest price variation, with an average of 16.93 USD,
+making it the most stable brand. Other brands with relatively stable
+pricing include Realme, Poco, Infinix, and POCO, all of which have lower
+price fluctuations compared to Apple.
+
+Conclusion:
+
+Apple has high price variation but is not the most extreme case (Huawei
+leads). Apple's devices have the highest markup in India. Nokia is the
+most stable brand in terms of pricing across different regions.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Do all smartphone brands have flagship and budget-friendly models, or
+  do some brands only focus on premium devices? Hint: Categorize brands
+  into budget, mid-range, and premium segments (Budget: \textless{}
+  \$300, Mid-range: \$300 - \$700, Premium: \textgreater{} \$700). Check
+  how many models each brand has in each segment. Determine whether a
+  brand covers all three segments or focuses only on premium/mid-range
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyr)}
+\NormalTok{mobiles\_dataset }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rowwise}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Average\_Price\_USD =} \FunctionTok{mean}\NormalTok{(}\FunctionTok{c}\NormalTok{(Launched.Price.Pakistan.PKR, Launched.Price.India.INR, }
+\NormalTok{                                    Launched.Price.USA.USD, Launched.Price.China.CNY, }
+\NormalTok{                                    Launched.Price.Dubai.AED), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+
+\NormalTok{mobiles\_dataset }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Price\_Category =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      Average\_Price\_USD }\SpecialCharTok{\textless{}} \DecValTok{300} \SpecialCharTok{\textasciitilde{}} \StringTok{"Budget"}\NormalTok{,}
+\NormalTok{      Average\_Price\_USD }\SpecialCharTok{\textgreater{}=} \DecValTok{300} \SpecialCharTok{\&}\NormalTok{ Average\_Price\_USD }\SpecialCharTok{\textless{}=} \DecValTok{700} \SpecialCharTok{\textasciitilde{}} \StringTok{"Mid{-}range"}\NormalTok{,}
+\NormalTok{      Average\_Price\_USD }\SpecialCharTok{\textgreater{}} \DecValTok{700} \SpecialCharTok{\textasciitilde{}} \StringTok{"Premium"}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\NormalTok{brand\_segments }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Company.Name, Price\_Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Model\_Count =} \FunctionTok{n}\NormalTok{(), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ Price\_Category, }\AttributeTok{values\_from =}\NormalTok{ Model\_Count, }\AttributeTok{values\_fill =} \FunctionTok{list}\NormalTok{(}\AttributeTok{Model\_Count =} \DecValTok{0}\NormalTok{))}
+
+\NormalTok{brand\_segments }\OtherTok{\textless{}{-}}\NormalTok{ brand\_segments }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Covers\_All\_Segments =} \FunctionTok{ifelse}\NormalTok{(Budget }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&} \StringTok{\textasciigrave{}}\AttributeTok{Mid{-}range}\StringTok{\textasciigrave{}} \SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ Premium }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{),}
+    \AttributeTok{Focus =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      Budget }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&} \StringTok{\textasciigrave{}}\AttributeTok{Mid{-}range}\StringTok{\textasciigrave{}} \SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ Premium }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"All Segments"}\NormalTok{,}
+\NormalTok{      Budget }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&} \StringTok{\textasciigrave{}}\AttributeTok{Mid{-}range}\StringTok{\textasciigrave{}} \SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Budget \& Mid{-}range"}\NormalTok{,}
+      \StringTok{\textasciigrave{}}\AttributeTok{Mid{-}range}\StringTok{\textasciigrave{}} \SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ Premium }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Mid{-}range \& Premium"}\NormalTok{,}
+\NormalTok{      Budget }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ Premium }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Budget \& Premium"}\NormalTok{,}
+\NormalTok{      Budget }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Budget Only"}\NormalTok{,}
+      \StringTok{\textasciigrave{}}\AttributeTok{Mid{-}range}\StringTok{\textasciigrave{}} \SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Mid{-}range Only"}\NormalTok{,}
+\NormalTok{      Premium }\SpecialCharTok{\textgreater{}} \DecValTok{0} \SpecialCharTok{\textasciitilde{}} \StringTok{"Premium Only"}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\FunctionTok{print}\NormalTok{(brand\_segments)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 19 x 6
+##    Company.Name Budget `Mid-range` Premium Covers_All_Segments Focus            
+##    <chr>         <int>       <int>   <int> <chr>               <chr>            
+##  1 Apple             1           6      90 Yes                 All Segments     
+##  2 Google            0          11      10 No                  Mid-range & Prem~
+##  3 Honor            33          35      23 Yes                 All Segments     
+##  4 Huawei            0          17      25 No                  Mid-range & Prem~
+##  5 Infinix          43          13       0 No                  Budget & Mid-ran~
+##  6 Lenovo           10           5       0 No                  Budget & Mid-ran~
+##  7 Motorola         27          29       6 Yes                 All Segments     
+##  8 Nokia            10           0       0 No                  Budget Only      
+##  9 OnePlus           9          29      15 Yes                 All Segments     
+## 10 Oppo             41          66      22 Yes                 All Segments     
+## 11 POCO             19          11       0 No                  Budget & Mid-ran~
+## 12 Poco              2           0       0 No                  Budget Only      
+## 13 Realme           44          25       0 No                  Budget & Mid-ran~
+## 14 Samsung          29          14      41 Yes                 All Segments     
+## 15 Sony              0           3       6 No                  Mid-range & Prem~
+## 16 Tecno            20          10       9 Yes                 All Segments     
+## 17 Vivo             40          37       9 Yes                 All Segments     
+## 18 Xiaomi            7          10      10 Yes                 All Segments     
+## 19 iQOO              0           3       0 No                  Mid-range Only
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Company.Name, }\AttributeTok{fill =}\NormalTok{ Price\_Category)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{position =} \StringTok{"stack"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Distribution of Smartphone Models by Brand and Price Segment"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Brand"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Number of Models"}\NormalTok{,}
+       \AttributeTok{fill =} \StringTok{"Price Category"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-13-1.pdf}
+Based on the findings and plot Not all smartphone brands have both
+flagship and budget-friendly models. Some brands focus exclusively on
+premium devices, while others cover a mix of price segments. Key
+Findings from the Analysis: Brands Covering All Three Segments (Budget,
+Mid-range, and Premium) Samsung Oppo Vivo Honor Xiaomi These brands
+offer models in all three price categories, meaning they cater to
+budget-conscious customers, mid-range buyers, and premium users.
+
+Brands Focusing Only on Mid-Range \& Premium Apple Google Huawei These
+brands do not produce budget-friendly models (below \$300). Their
+offerings are mostly mid-range and premium.
+
+Brands Focusing Only on Budget \& Mid-Range Infinix Tecno Motorola
+Realme These brands focus on budget and mid-range devices but do not
+have premium models.
+
+Brands Focusing Exclusively on Premium Apple stands out as a brand that
+primarily operates in the premium segment, with very few or no models in
+the budget and mid-range categories.
+
+Conclusion: Some brands (Samsung, Oppo, Vivo, Honor, Xiaomi) cater to
+all segments. Brands like Apple and Google focus on premium and
+mid-range only, skipping budget-friendly options. Budget-focused brands
+like Infinix and Tecno do not have flagship devices.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Which region offers the most affordable smartphone prices on average?
+  Are there any brands that price their phones significantly lower in
+  one region compared to others?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+
+\NormalTok{region\_avg\_prices }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Avg\_Price\_PKR =} \FunctionTok{mean}\NormalTok{(Launched.Price.Pakistan.PKR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Avg\_Price\_INR =} \FunctionTok{mean}\NormalTok{(Launched.Price.India.INR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Avg\_Price\_CNY =} \FunctionTok{mean}\NormalTok{(Launched.Price.China.CNY, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Avg\_Price\_USD =} \FunctionTok{mean}\NormalTok{(Launched.Price.USA.USD, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Avg\_Price\_AED =} \FunctionTok{mean}\NormalTok{(Launched.Price.Dubai.AED, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \FunctionTok{everything}\NormalTok{(), }\AttributeTok{names\_to =} \StringTok{"Region"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Avg\_Price"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Region =} \FunctionTok{recode}\NormalTok{(Region,}
+                         \StringTok{"Avg\_Price\_PKR"} \OtherTok{=} \StringTok{"Pakistan (PKR)"}\NormalTok{,}
+                         \StringTok{"Avg\_Price\_INR"} \OtherTok{=} \StringTok{"India (INR)"}\NormalTok{,}
+                         \StringTok{"Avg\_Price\_CNY"} \OtherTok{=} \StringTok{"China (CNY)"}\NormalTok{,}
+                         \StringTok{"Avg\_Price\_USD"} \OtherTok{=} \StringTok{"USA (USD)"}\NormalTok{,}
+                         \StringTok{"Avg\_Price\_AED"} \OtherTok{=} \StringTok{"Dubai (AED)"}\NormalTok{))}
+
+\FunctionTok{ggplot}\NormalTok{(region\_avg\_prices, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Region, Avg\_Price), }\AttributeTok{y =}\NormalTok{ Avg\_Price, }\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average Smartphone Prices by Region"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Region"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average Price"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{brand\_price\_variation }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Company.Name) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Price\_SD\_PKR =} \FunctionTok{sd}\NormalTok{(Launched.Price.Pakistan.PKR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Price\_SD\_INR =} \FunctionTok{sd}\NormalTok{(Launched.Price.India.INR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Price\_SD\_CNY =} \FunctionTok{sd}\NormalTok{(Launched.Price.China.CNY, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Price\_SD\_USD =} \FunctionTok{sd}\NormalTok{(Launched.Price.USA.USD, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Price\_SD\_AED =} \FunctionTok{sd}\NormalTok{(Launched.Price.Dubai.AED, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{Company.Name, }\AttributeTok{names\_to =} \StringTok{"Region"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Price\_SD"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Region =} \FunctionTok{recode}\NormalTok{(Region,}
+                         \StringTok{"Price\_SD\_PKR"} \OtherTok{=} \StringTok{"Pakistan (PKR)"}\NormalTok{,}
+                         \StringTok{"Price\_SD\_INR"} \OtherTok{=} \StringTok{"India (INR)"}\NormalTok{,}
+                         \StringTok{"Price\_SD\_CNY"} \OtherTok{=} \StringTok{"China (CNY)"}\NormalTok{,}
+                         \StringTok{"Price\_SD\_USD"} \OtherTok{=} \StringTok{"USA (USD)"}\NormalTok{,}
+                         \StringTok{"Price\_SD\_AED"} \OtherTok{=} \StringTok{"Dubai (AED)"}\NormalTok{))}
+\FunctionTok{ggplot}\NormalTok{(brand\_price\_variation, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Company.Name, }\AttributeTok{y =}\NormalTok{ Price\_SD, }\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price Variation of Smartphone Brands Across Regions"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Brand"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price Standard Deviation"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-14-2.pdf}
+From the first bar chart (Average Smartphone Prices by Region), Pakistan
+(PKR) has the lowest average smartphone prices compared to other
+regions.SO Most Affordable: Pakistan China India USA Least Affordable:
+UAE
+
+Thus, Pakistan offers the most affordable smartphone prices on average.
+
+From the second bar chart (Price Variation of Smartphone Brands Across
+Regions), some brands exhibit high standard deviations, meaning they
+price their models significantly differently across regions. Huawei and
+Honor show the most significant price variations, indicating that they
+price their smartphones much lower in some regions compared to others.
+Samsung also shows noticeable price variation, likely adjusting its
+pricing strategy based on regional market demand. Brands like Apple and
+Google have relatively lower price variations, meaning their pricing
+remains relatively stable across different regions.
+
+Conclusion: Pakistan has the most affordable smartphones on average.
+Huawei, Honor, and Samsung exhibit large price variations across
+regions, meaning they sell their phones at significantly different
+prices in different countries. Apple and Google maintain more stable
+pricing across regions.
+
+Part 2: Visualization ( R)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Plot a bar chart for average price per region in USD.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\NormalTok{region\_avg\_prices }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Region =} \FunctionTok{c}\NormalTok{(}\StringTok{"Pakistan"}\NormalTok{, }\StringTok{"India"}\NormalTok{, }\StringTok{"China"}\NormalTok{, }\StringTok{"USA"}\NormalTok{, }\StringTok{"UAE (Dubai)"}\NormalTok{),}
+  \AttributeTok{Avg\_Price =} \FunctionTok{c}\NormalTok{(}
+    \FunctionTok{mean}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Launched.Price.Pakistan.PKR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \FunctionTok{mean}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Launched.Price.India.INR, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) ,}
+    \FunctionTok{mean}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Launched.Price.China.CNY, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) ,}
+    \FunctionTok{mean}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Launched.Price.USA.USD, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \FunctionTok{mean}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Launched.Price.Dubai.AED, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  )}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(region\_avg\_prices, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Region, Avg\_Price), }\AttributeTok{y =}\NormalTok{ Avg\_Price, }\AttributeTok{fill =}\NormalTok{ Region)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Average Smartphone Prices per Region (USD)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Region"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Average Price (USD)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Create a pie chart of the market share of smartphone brands
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{brand\_market\_share }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{table}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name))}
+
+\FunctionTok{ggplot}\NormalTok{(brand\_market\_share, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \StringTok{""}\NormalTok{, }\AttributeTok{y =}\NormalTok{ Freq, }\AttributeTok{fill =}\NormalTok{ Var1)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{width =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{coord\_polar}\NormalTok{(}\StringTok{"y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}  
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Market Share of Smartphone Brands"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"Brand"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-16-1.pdf}
+Part 3: Recreate (R only)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)}
+
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Company.Name, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{fill =}\NormalTok{ Company.Name)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{outlier.shape =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{geom\_jitter}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Price Distribution by Company in USA"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"A boxplot showing how the price varies by company, with individual data points overlaid"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Company"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Price in USD"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{14}\NormalTok{),  }
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"italic"}\NormalTok{, }\AttributeTok{size =} \DecValTok{8}\NormalTok{),  }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{),}
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{12}\NormalTok{),}
+    \AttributeTok{legend.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)}
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }
+                            \AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }
+                            \AttributeTok{color =}\NormalTok{ Company.Name, }
+                            \AttributeTok{size =}\NormalTok{ Screen.Size.inches)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Battery Capacity vs. Price in USA"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"The relationship between battery capacity, price, and screen size across different smartphone brands"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Battery Capacity"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Price"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Brand"}\NormalTok{,}
+    \AttributeTok{size =} \StringTok{"Screen Size"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{14}\NormalTok{),  }
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"italic"}\NormalTok{, }\AttributeTok{size =} \DecValTok{8}\NormalTok{),  }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{0}\NormalTok{),  }
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{),}
+    \AttributeTok{legend.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{7}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"right"} 
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)}
+
+
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }
+                            \AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }
+                            \AttributeTok{color =}\NormalTok{ Company.Name)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Battery Capacity vs. Price in USA"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"The relationship between battery capacity and price across different smartphone brands"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Battery Capacity"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Price"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Brand"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{hue\_pal}\NormalTok{()(}\FunctionTok{length}\NormalTok{(}\FunctionTok{levels}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)))) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{14}\NormalTok{),  }
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"italic"}\NormalTok{, }\AttributeTok{size =} \DecValTok{8}\NormalTok{),  }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{0}\NormalTok{),  }
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{),}
+    \AttributeTok{legend.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{7}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+    \AttributeTok{legend.key.size =} \FunctionTok{unit}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\StringTok{"cm"}\NormalTok{)  }
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{color =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{ncol =} \DecValTok{1}\NormalTok{))  }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)}
+
+\FunctionTok{ggplot}\NormalTok{(mobiles\_dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }
+                            \AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }
+                            \AttributeTok{color =}\NormalTok{ Company.Name, }
+                            \AttributeTok{size =}\NormalTok{ Screen.Size.inches)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{scale\_size\_continuous}\NormalTok{(}\AttributeTok{range =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{6}\NormalTok{), }\AttributeTok{guide =} \StringTok{"legend"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{hue\_pal}\NormalTok{()(}\FunctionTok{length}\NormalTok{(}\FunctionTok{levels}\NormalTok{(mobiles\_dataset}\SpecialCharTok{$}\NormalTok{Company.Name)))) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Battery Capacity vs. Price in USA"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"The relationship between battery capacity, price, and screen size across different smartphone brands"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Battery Capacity"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Price"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Brand"}\NormalTok{,}
+    \AttributeTok{size =} \StringTok{"Screen Size"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{14}\NormalTok{),  }
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"italic"}\NormalTok{, }\AttributeTok{size =} \DecValTok{8}\NormalTok{),  }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{0}\NormalTok{),  }
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{),}
+    \AttributeTok{legend.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{7}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+    \AttributeTok{legend.spacing.y =} \FunctionTok{unit}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\StringTok{\textquotesingle{}mm\textquotesingle{}}\NormalTok{)  }
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{color =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{ncol =} \DecValTok{1}\NormalTok{))  }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+
+\NormalTok{top\_brands }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"Apple"}\NormalTok{, }\StringTok{"Honor"}\NormalTok{, }\StringTok{"Oppo"}\NormalTok{, }\StringTok{"Samsung"}\NormalTok{, }\StringTok{"Vivo"}\NormalTok{)}
+\NormalTok{filtered\_data }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Company.Name }\SpecialCharTok{\%in\%}\NormalTok{ top\_brands)}
+
+\NormalTok{filtered\_data}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(filtered\_data}\SpecialCharTok{$}\NormalTok{Company.Name, }\AttributeTok{levels =}\NormalTok{ top\_brands)}
+
+\FunctionTok{ggplot}\NormalTok{(filtered\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }
+                          \AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }
+                          \AttributeTok{shape =}\NormalTok{ Company.Name,  }
+                          \AttributeTok{color =}\NormalTok{ Screen.Size.inches)) }\SpecialCharTok{+}  
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{scale\_shape\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{17}\NormalTok{, }\DecValTok{18}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DecValTok{20}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Battery Capacity vs. Price for Top 5 Brands"}\NormalTok{,}
+    \AttributeTok{subtitle =} \StringTok{"Different Shapes for Each Brand, Color by Screen Size, (USA)"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Screen Size"}\NormalTok{,}
+    \AttributeTok{shape =} \StringTok{"Brand"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{, }\AttributeTok{size =} \DecValTok{14}\NormalTok{),  }
+    \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"italic"}\NormalTok{, }\AttributeTok{size =} \DecValTok{10}\NormalTok{),  }
+    \AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{0}\NormalTok{),  }
+    \AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{),}
+    \AttributeTok{legend.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{),}
+    \AttributeTok{legend.position =} \StringTok{"right"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-21-1.pdf}
+Part 4: Personal findings Using either R or Python, explain what else
+affects the prices of mobile phones. Summarize your findings.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(corrplot)}
+
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ mobiles\_dataset}
+
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{RAM }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"GB"}\NormalTok{, }\StringTok{""}\NormalTok{, df}\SpecialCharTok{$}\NormalTok{RAM))  }
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{Front.Camera }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"MP"}\NormalTok{, }\StringTok{""}\NormalTok{, df}\SpecialCharTok{$}\NormalTok{Front.Camera))  }
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{Back.Camera }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"MP"}\NormalTok{, }\StringTok{""}\NormalTok{, df}\SpecialCharTok{$}\NormalTok{Back.Camera))  }
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{Processor }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{Processor)  }
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{Company.Name }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{Company.Name)  }
+
+\NormalTok{numeric\_data }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(Launched.Price.USA.USD, Battery.Capacity.mAh, Screen.Size.inches, RAM, Front.Camera, Back.Camera)}
+
+\NormalTok{numeric\_data }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(numeric\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cor\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(numeric\_data, }\AttributeTok{use =} \StringTok{"complete.obs"}\NormalTok{)}
+\FunctionTok{corrplot}\NormalTok{(cor\_matrix, }\AttributeTok{method =} \StringTok{"color"}\NormalTok{, }\AttributeTok{type =} \StringTok{"upper"}\NormalTok{, }\AttributeTok{tl.cex =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{number.cex =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{col =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{, }\StringTok{"white"}\NormalTok{, }\StringTok{"red"}\NormalTok{))(}\DecValTok{200}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(Launched.Price.USA.USD }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Battery.Capacity.mAh }\SpecialCharTok{+}\NormalTok{ Screen.Size.inches }\SpecialCharTok{+}\NormalTok{ RAM }\SpecialCharTok{+}\NormalTok{ Front.Camera }\SpecialCharTok{+}\NormalTok{ Back.Camera }\SpecialCharTok{+}\NormalTok{ Company.Name }\SpecialCharTok{+}\NormalTok{ Processor, }\AttributeTok{data =}\NormalTok{ df)}
+\FunctionTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Launched.Price.USA.USD ~ Battery.Capacity.mAh + 
+##     Screen.Size.inches + RAM + Front.Camera + Back.Camera + Company.Name + 
+##     Processor, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -640.47  -47.62    0.00   43.23 1132.55 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                                         Estimate Std. Error t value
+## (Intercept)                            334.51510  138.23387   2.420
+## Battery.Capacity.mAh                    -0.10219    0.02391  -4.273
+## Screen.Size.inches                      64.75321   19.66430   3.293
+## RAM                                     36.31030    5.97772   6.074
+## Front.Camera                             2.65558    1.43548   1.850
+## Back.Camera                             -0.12312    0.48502  -0.254
+## Company.NameGoogle                      43.73968  245.02210   0.179
+## Company.NameHonor                     -341.34823  174.01811  -1.962
+## Company.NameHuawei                    -381.36149  262.67171  -1.452
+## Company.NameInfinix                   -403.04331  174.20154  -2.314
+## Company.NameiQOO                      -383.81607  204.02630  -1.881
+## Company.NameLenovo                    -395.51122  182.86501  -2.163
+## Company.NameMotorola                  -287.92243  164.71963  -1.748
+## Company.NameNokia                     -299.51911  193.74792  -1.546
+## Company.NameOnePlus                   -257.76033  194.69048  -1.324
+## Company.NameOppo                      -125.37464  189.77874  -0.661
+## Company.NamePoco                      -149.82105  223.10829  -0.672
+## Company.NamePOCO                      -324.17149  174.45140  -1.858
+## Company.NameRealme                    -260.58519  179.55785  -1.451
+## Company.NameSamsung                   -215.30658  190.65539  -1.129
+## Company.NameSony                       265.70285  183.37889   1.449
+## Company.NameTecno                     -209.84102  176.38685  -1.190
+## Company.NameVivo                      -340.85198  173.77976  -1.961
+## ProcessorA13 Bionic                    124.21410  169.67735   0.732
+## ProcessorA14 Bionic                    194.24263  136.52501   1.423
+## ProcessorA15 Bionic                    188.31602  151.06898   1.247
+## ProcessorA16 Bionic                    314.44231  134.79539   2.333
+## ProcessorA17 Bionic                    304.77019  134.61769   2.264
+## ProcessorDimensity 1100                 85.34010  210.09696   0.406
+## ProcessorDimensity 1200                 19.85683  208.85944   0.095
+## ProcessorDimensity 8350                377.76296  187.89464   2.011
+## ProcessorDimensity 900                  26.95573  206.83359   0.130
+## ProcessorDimensity 9400                695.07716  157.43997   4.415
+## ProcessorExynos 1380                   203.67826  178.84668   1.139
+## ProcessorExynos 7570                  -124.09150  225.23543  -0.551
+## ProcessorExynos 7870                   -70.33488  224.90346  -0.313
+## ProcessorExynos 850                    -63.39210  224.88937  -0.282
+## ProcessorExynos 9609                   -87.53921  165.08251  -0.530
+## ProcessorExynos 9810                   220.88594  222.38483   0.993
+## ProcessorGoogle Tensor                  33.15589  234.53058   0.141
+## ProcessorGoogle Tensor G2              -17.68484  235.15826  -0.075
+## ProcessorGoogle Tensor G3               77.80034  235.06363   0.331
+## ProcessorGoogle Tensor G4              453.77546  233.32858   1.945
+## ProcessorHelio P22                     103.78434  215.48708   0.482
+## ProcessorKirin 710A                    154.28244  208.28546   0.741
+## ProcessorKirin 710F                     27.55813  208.73435   0.132
+## ProcessorKirin 820 5G                   85.85077  173.68475   0.494
+## ProcessorKirin 9000 5G                2360.84140  282.84698   8.347
+## ProcessorKirin 985 5G                   71.20201  210.92936   0.338
+## ProcessorKirin 990 5G                  194.49799  164.54066   1.182
+## ProcessorKirin 990E 5G                 537.00582  282.02209   1.904
+## ProcessorMediaTek Dimensity 1000+      252.61931  208.82692   1.210
+## ProcessorMediaTek Dimensity 1100        99.74308  207.05807   0.482
+## ProcessorMediaTek Dimensity 1200       328.21583  151.03032   2.173
+## ProcessorMediaTek Dimensity 1300       331.53226  173.41798   1.912
+## ProcessorMediaTek Dimensity 1300T      224.26897  209.63110   1.070
+## ProcessorMediaTek Dimensity 6020        28.74242  151.26721   0.190
+## ProcessorMediaTek Dimensity 6100+       11.74916  157.63326   0.075
+## ProcessorMediaTek Dimensity 700         89.69380  141.59600   0.633
+## ProcessorMediaTek Dimensity 7025        33.50569  149.68634   0.224
+## ProcessorMediaTek Dimensity 7200       -47.87365  151.72203  -0.316
+## ProcessorMediaTek Dimensity 7300       -37.51767  165.48438  -0.227
+## ProcessorMediaTek Dimensity 800        156.45931  159.80920   0.979
+## ProcessorMediaTek Dimensity 8000       310.02990  215.64345   1.438
+## ProcessorMediaTek Dimensity 800U       -33.79112  209.10013  -0.162
+## ProcessorMediaTek Dimensity 8020        99.51587  160.08106   0.622
+## ProcessorMediaTek Dimensity 8050       341.00627  171.84034   1.984
+## ProcessorMediaTek Dimensity 810        111.42290  133.41433   0.835
+## ProcessorMediaTek Dimensity 8100       107.72923  137.30009   0.785
+## ProcessorMediaTek Dimensity 8200       211.09601  141.16662   1.495
+## ProcessorMediaTek Dimensity 8300       137.38460  209.46844   0.656
+## ProcessorMediaTek Dimensity 8400       239.57049  209.64914   1.143
+## ProcessorMediaTek Dimensity 900        162.11877  138.65365   1.169
+## ProcessorMediaTek Dimensity 9000       348.28356  139.86846   2.490
+## ProcessorMediaTek Dimensity 920        127.12514  178.92219   0.711
+## ProcessorMediaTek Dimensity 9200       435.06442  143.02195   3.042
+## ProcessorMediaTek Dimensity 9200+     1215.21300  210.48458   5.773
+## ProcessorMediaTek G35                   77.27560  189.64592   0.407
+## ProcessorMediaTek G99                   10.67862  210.23690   0.051
+## ProcessorMediaTek Helio A20            150.53047  173.02284   0.870
+## ProcessorMediaTek Helio A22             24.60000  171.53019   0.143
+## ProcessorMediaTek Helio A25            132.51144  172.47281   0.768
+## ProcessorMediaTek Helio G25            119.42435  144.72195   0.825
+## ProcessorMediaTek Helio G35            244.14132  206.68626   1.181
+## ProcessorMediaTek Helio G36             87.65305  174.51146   0.502
+## ProcessorMediaTek Helio G37            120.24538  133.30162   0.902
+## ProcessorMediaTek Helio G70            149.41832  157.77552   0.947
+## ProcessorMediaTek Helio G80             11.16544  133.42742   0.084
+## ProcessorMediaTek Helio G85             20.36226  131.53266   0.155
+## ProcessorMediaTek Helio G88             45.65094  136.10094   0.335
+## ProcessorMediaTek Helio G90T           -19.76112  173.38653  -0.114
+## ProcessorMediaTek Helio G95            141.33846  206.28466   0.685
+## ProcessorMediaTek Helio G96            -17.94866  150.95531  -0.119
+## ProcessorMediaTek Helio G99             20.46924  131.04347   0.156
+## ProcessorMediaTek Helio P22            -34.91038  210.40826  -0.166
+## ProcessorMediaTek Helio P22T          -125.67057  223.05762  -0.563
+## ProcessorMediaTek Helio P35            124.47108  144.72621   0.860
+## ProcessorMediaTek Helio P65             15.11722  173.56631   0.087
+## ProcessorMediaTek Helio P70              4.31129  174.61507   0.025
+## ProcessorMediaTek MT6592               -22.04508  213.94968  -0.103
+## ProcessorMediaTek MT6762G Helio G25     45.03245  208.53872   0.216
+## ProcessorMediaTek MT8768T              -54.75148  212.06865  -0.258
+## ProcessorMediaTek MT8786               -90.33397  165.88731  -0.545
+## ProcessorQualcomm MSM8916              -86.46581  222.83638  -0.388
+## ProcessorQualcomm Snapdragon 439       136.50841  172.91967   0.789
+## ProcessorQualcomm Snapdragon 6 Gen 1   209.22836  161.86645   1.293
+## ProcessorQualcomm Snapdragon 660        38.74052  176.00540   0.220
+## ProcessorQualcomm Snapdragon 662       -76.96306  213.46920  -0.361
+## ProcessorQualcomm Snapdragon 675        75.22902  154.62814   0.487
+## ProcessorQualcomm Snapdragon 680        39.11816  211.87390   0.185
+## ProcessorQualcomm Snapdragon 685       184.18686  175.43718   1.050
+## ProcessorQualcomm Snapdragon 695       127.27383  138.12253   0.921
+## ProcessorQualcomm Snapdragon 6s Gen 1  -94.56989  186.66937  -0.507
+## ProcessorQualcomm Snapdragon 7 Gen 1   139.03700  223.46041   0.622
+## ProcessorQualcomm Snapdragon 710       155.75614  174.46558   0.893
+## ProcessorQualcomm Snapdragon 712        94.43773  152.24534   0.620
+## ProcessorQualcomm Snapdragon 765G      122.62143  177.27648   0.692
+## ProcessorQualcomm Snapdragon 778G      214.63042  154.69103   1.387
+## ProcessorQualcomm Snapdragon 778G+     271.47145  178.86124   1.518
+## ProcessorQualcomm Snapdragon 782G      258.65933  214.93493   1.203
+## ProcessorQualcomm Snapdragon 7s Gen 2  230.77280  176.49176   1.308
+## ProcessorQualcomm Snapdragon 8 Gen 1   892.48395  155.40056   5.743
+## ProcessorQualcomm Snapdragon 8 Gen 2   981.06622  150.81088   6.505
+## ProcessorQualcomm Snapdragon 8 Gen 3   881.49803  146.89924   6.001
+## ProcessorQualcomm Snapdragon 8+ Gen 1  576.50984  161.66559   3.566
+## ProcessorQualcomm Snapdragon 855       574.92553  174.00693   3.304
+## ProcessorQualcomm Snapdragon 870       444.94408  176.98196   2.514
+## ProcessorQualcomm Snapdragon 888       619.30744  208.12340   2.976
+## ProcessorQualcomm Snapdragon 888+      846.68684  174.88786   4.841
+## ProcessorSnapdragon 4 Gen 1             46.96095  206.73154   0.227
+## ProcessorSnapdragon 430                -14.06775  209.79703  -0.067
+## ProcessorSnapdragon 460                189.45347  213.06387   0.889
+## ProcessorSnapdragon 480                 34.41589  221.03302   0.156
+## ProcessorSnapdragon 480+               119.82241  221.66847   0.541
+## ProcessorSnapdragon 480+ 5G            199.55601  162.40574   1.229
+## ProcessorSnapdragon 6 Gen 1             58.50944  162.34669   0.360
+## ProcessorSnapdragon 6 Gen 3             43.49421  162.67576   0.267
+## ProcessorSnapdragon 615                 -0.07622  213.24372   0.000
+## ProcessorSnapdragon 617               -105.75787  225.79683  -0.468
+## ProcessorSnapdragon 625                -37.84897  225.20944  -0.168
+## ProcessorSnapdragon 626                -56.48755  210.69553  -0.268
+## ProcessorSnapdragon 632                 64.95406  215.48522   0.301
+## ProcessorSnapdragon 652                -29.13343  209.36963  -0.139
+## ProcessorSnapdragon 662                115.66264  142.85392   0.810
+## ProcessorSnapdragon 670               -137.48448  244.44065  -0.562
+## ProcessorSnapdragon 680 4G             154.10397  162.78518   0.947
+## ProcessorSnapdragon 695                -13.81571  130.99391  -0.105
+## ProcessorSnapdragon 695 5G             160.36672  141.05127   1.137
+## ProcessorSnapdragon 6s 4G Gen 1        114.57922  175.21403   0.654
+## ProcessorSnapdragon 6s Gen 3           -18.27868  141.62314  -0.129
+## ProcessorSnapdragon 7 Gen 1            186.05288  144.22434   1.290
+## ProcessorSnapdragon 7 Gen 3            212.11880  152.89108   1.387
+## ProcessorSnapdragon 7+ Gen 2           165.21036  207.12953   0.798
+## ProcessorSnapdragon 710                 31.55234  157.88396   0.200
+## ProcessorSnapdragon 720G                85.86108  206.86848   0.415
+## ProcessorSnapdragon 730G              -321.56412  270.29022  -1.190
+## ProcessorSnapdragon 732G                50.93779  207.50265   0.245
+## ProcessorSnapdragon 750G               227.12017  208.83762   1.088
+## ProcessorSnapdragon 765G               -60.52738  234.34177  -0.258
+## ProcessorSnapdragon 778G               207.78613  159.94802   1.299
+## ProcessorSnapdragon 778G 4G            214.86683  252.38044   0.851
+## ProcessorSnapdragon 7s Gen 2            32.90886  144.04517   0.228
+## ProcessorSnapdragon 8 Gen 1            308.92474  157.62502   1.960
+## ProcessorSnapdragon 8 Gen 2            387.70855  149.65847   2.591
+## ProcessorSnapdragon 8 Gen 3            581.14329  144.83321   4.013
+## ProcessorSnapdragon 8+ Gen 1           356.89228  139.84400   2.552
+## ProcessorSnapdragon 8+ Gen 1 4G        859.86711  258.27325   3.329
+## ProcessorSnapdragon 8+ Gen 2           303.73434  209.31384   1.451
+## ProcessorSnapdragon 855                176.72569  183.39104   0.964
+## ProcessorSnapdragon 860                 68.96791  207.72037   0.332
+## ProcessorSnapdragon 865                273.93228  208.01459   1.317
+## ProcessorSnapdragon 870                175.48140  139.34488   1.259
+## ProcessorSnapdragon 888                171.35778  185.17734   0.925
+## ProcessorSnapdragon 888 4G            1065.53144  245.10524   4.347
+## ProcessorSnapdragon 888+ 5G            260.96608  165.52379   1.577
+## ProcessorSpreadtrum SC8830            -192.44756  227.91371  -0.844
+## ProcessorUnisoc SC9832E                -68.15945  174.72376  -0.390
+## ProcessorUnisoc SC9863A                 38.54114  146.01166   0.264
+## ProcessorUnisoc T606                    99.60972  134.96944   0.738
+## ProcessorUnisoc T610                   156.25105  171.04398   0.914
+## ProcessorUnisoc T616                    46.72364  159.50071   0.293
+## ProcessorUnisoc T618                   -38.26276  222.14758  -0.172
+## ProcessorUnisoc T700                   114.34878  145.78813   0.784
+## ProcessorUnisoc T760                          NA         NA      NA
+##                                                 Pr(>|t|)    
+## (Intercept)                                     0.016077 *  
+## Battery.Capacity.mAh                  0.0000254239873850 ***
+## Screen.Size.inches                              0.001102 ** 
+## RAM                                   0.0000000035104419 ***
+## Front.Camera                                    0.065237 .  
+## Back.Camera                                     0.799783    
+## Company.NameGoogle                              0.858432    
+## Company.NameHonor                               0.050674 .  
+## Company.NameHuawei                              0.147515    
+## Company.NameInfinix                             0.021316 *  
+## Company.NameiQOO                                0.060846 .  
+## Company.NameLenovo                              0.031288 *  
+## Company.NameMotorola                            0.081425 .  
+## Company.NameNokia                               0.123106    
+## Company.NameOnePlus                             0.186459    
+## Company.NameOppo                                0.509318    
+## Company.NamePoco                                0.502373    
+## Company.NamePOCO                                0.064048 .  
+## Company.NameRealme                              0.147681    
+## Company.NameSamsung                             0.259613    
+## Company.NameSony                                0.148331    
+## Company.NameTecno                               0.235055    
+## Company.NameVivo                                0.050694 .  
+## ProcessorA13 Bionic                             0.464664    
+## ProcessorA14 Bionic                             0.155773    
+## ProcessorA15 Bionic                             0.213466    
+## ProcessorA16 Bionic                             0.020278 *  
+## ProcessorA17 Bionic                             0.024241 *  
+## ProcessorDimensity 1100                         0.684870    
+## ProcessorDimensity 1200                         0.924316    
+## ProcessorDimensity 8350                         0.045211 *  
+## ProcessorDimensity 900                          0.896390    
+## ProcessorDimensity 9400               0.0000138133637892 ***
+## ProcessorExynos 1380                            0.255615    
+## ProcessorExynos 7570                            0.582056    
+## ProcessorExynos 7870                            0.754685    
+## ProcessorExynos 850                             0.778216    
+## ProcessorExynos 9609                            0.596286    
+## ProcessorExynos 9810                            0.321329    
+## ProcessorGoogle Tensor                          0.887665    
+## ProcessorGoogle Tensor G2                       0.940099    
+## ProcessorGoogle Tensor G3                       0.740878    
+## ProcessorGoogle Tensor G4                       0.052670 .  
+## ProcessorHelio P22                              0.630398    
+## ProcessorKirin 710A                             0.459399    
+## ProcessorKirin 710F                             0.895047    
+## ProcessorKirin 820 5G                           0.621438    
+## ProcessorKirin 9000 5G                0.0000000000000021 ***
+## ProcessorKirin 985 5G                           0.735912    
+## ProcessorKirin 990 5G                           0.238052    
+## ProcessorKirin 990E 5G                          0.057785 .  
+## ProcessorMediaTek Dimensity 1000+               0.227279    
+## ProcessorMediaTek Dimensity 1100                0.630335    
+## ProcessorMediaTek Dimensity 1200                0.030496 *  
+## ProcessorMediaTek Dimensity 1300                0.056795 .  
+## ProcessorMediaTek Dimensity 1300T               0.285499    
+## ProcessorMediaTek Dimensity 6020                0.849420    
+## ProcessorMediaTek Dimensity 6100+               0.940631    
+## ProcessorMediaTek Dimensity 700                 0.526890    
+## ProcessorMediaTek Dimensity 7025                0.823024    
+## ProcessorMediaTek Dimensity 7200                0.752560    
+## ProcessorMediaTek Dimensity 7300                0.820790    
+## ProcessorMediaTek Dimensity 800                 0.328296    
+## ProcessorMediaTek Dimensity 8000                0.151491    
+## ProcessorMediaTek Dimensity 800U                0.871720    
+## ProcessorMediaTek Dimensity 8020                0.534606    
+## ProcessorMediaTek Dimensity 8050                0.048056 *  
+## ProcessorMediaTek Dimensity 810                 0.404244    
+## ProcessorMediaTek Dimensity 8100                0.433250    
+## ProcessorMediaTek Dimensity 8200                0.135798    
+## ProcessorMediaTek Dimensity 8300                0.512374    
+## ProcessorMediaTek Dimensity 8400                0.254003    
+## ProcessorMediaTek Dimensity 900                 0.243174    
+## ProcessorMediaTek Dimensity 9000                0.013275 *  
+## ProcessorMediaTek Dimensity 920                 0.477905    
+## ProcessorMediaTek Dimensity 9200                0.002544 ** 
+## ProcessorMediaTek Dimensity 9200+     0.0000000182843667 ***
+## ProcessorMediaTek G35                           0.683931    
+## ProcessorMediaTek G99                           0.959522    
+## ProcessorMediaTek Helio A20                     0.384947    
+## ProcessorMediaTek Helio A22                     0.886052    
+## ProcessorMediaTek Helio A25                     0.442870    
+## ProcessorMediaTek Helio G25                     0.409870    
+## ProcessorMediaTek Helio G35                     0.238388    
+## ProcessorMediaTek Helio G36                     0.615816    
+## ProcessorMediaTek Helio G37                     0.367702    
+## ProcessorMediaTek Helio G70                     0.344333    
+## ProcessorMediaTek Helio G80                     0.933361    
+## ProcessorMediaTek Helio G85                     0.877070    
+## ProcessorMediaTek Helio G88                     0.737527    
+## ProcessorMediaTek Helio G90T                    0.909331    
+## ProcessorMediaTek Helio G95                     0.493734    
+## ProcessorMediaTek Helio G96                     0.905428    
+## ProcessorMediaTek Helio G99                     0.875972    
+## ProcessorMediaTek Helio P22                     0.868326    
+## ProcessorMediaTek Helio P22T                    0.573555    
+## ProcessorMediaTek Helio P35                     0.390404    
+## ProcessorMediaTek Helio P65                     0.930648    
+## ProcessorMediaTek Helio P70                     0.980317    
+## ProcessorMediaTek MT6592                        0.917996    
+## ProcessorMediaTek MT6762G Helio G25             0.829169    
+## ProcessorMediaTek MT8768T                       0.796434    
+## ProcessorMediaTek MT8786                        0.586440    
+## ProcessorQualcomm MSM8916                       0.698255    
+## ProcessorQualcomm Snapdragon 439                0.430440    
+## ProcessorQualcomm Snapdragon 6 Gen 1            0.197077    
+## ProcessorQualcomm Snapdragon 660                0.825925    
+## ProcessorQualcomm Snapdragon 662                0.718684    
+## ProcessorQualcomm Snapdragon 675                0.626933    
+## ProcessorQualcomm Snapdragon 680                0.853636    
+## ProcessorQualcomm Snapdragon 685                0.294564    
+## ProcessorQualcomm Snapdragon 695                0.357502    
+## ProcessorQualcomm Snapdragon 6s Gen 1           0.612770    
+## ProcessorQualcomm Snapdragon 7 Gen 1            0.534251    
+## ProcessorQualcomm Snapdragon 710                0.372652    
+## ProcessorQualcomm Snapdragon 712                0.535499    
+## ProcessorQualcomm Snapdragon 765G               0.489627    
+## ProcessorQualcomm Snapdragon 778G               0.166255    
+## ProcessorQualcomm Snapdragon 778G+              0.130052    
+## ProcessorQualcomm Snapdragon 782G               0.229694    
+## ProcessorQualcomm Snapdragon 7s Gen 2           0.191957    
+## ProcessorQualcomm Snapdragon 8 Gen 1  0.0000000215130103 ***
+## ProcessorQualcomm Snapdragon 8 Gen 2  0.0000000002963368 ***
+## ProcessorQualcomm Snapdragon 8 Gen 3  0.0000000052863012 ***
+## ProcessorQualcomm Snapdragon 8+ Gen 1           0.000417 ***
+## ProcessorQualcomm Snapdragon 855                0.001060 ** 
+## ProcessorQualcomm Snapdragon 870                0.012422 *  
+## ProcessorQualcomm Snapdragon 888                0.003145 ** 
+## ProcessorQualcomm Snapdragon 888+     0.0000020056354949 ***
+## ProcessorSnapdragon 4 Gen 1                     0.820444    
+## ProcessorSnapdragon 430                         0.946580    
+## ProcessorSnapdragon 460                         0.374567    
+## ProcessorSnapdragon 480                         0.876363    
+## ProcessorSnapdragon 480+                        0.589193    
+## ProcessorSnapdragon 480+ 5G                     0.220063    
+## ProcessorSnapdragon 6 Gen 1                     0.718786    
+## ProcessorSnapdragon 6 Gen 3                     0.789357    
+## ProcessorSnapdragon 615                         0.999715    
+## ProcessorSnapdragon 617                         0.639832    
+## ProcessorSnapdragon 625                         0.866641    
+## ProcessorSnapdragon 626                         0.788794    
+## ProcessorSnapdragon 632                         0.763280    
+## ProcessorSnapdragon 652                         0.889420    
+## ProcessorSnapdragon 662                         0.418735    
+## ProcessorSnapdragon 670                         0.574204    
+## ProcessorSnapdragon 680 4G                      0.344516    
+## ProcessorSnapdragon 695                         0.916070    
+## ProcessorSnapdragon 695 5G                      0.256409    
+## ProcessorSnapdragon 6s 4G Gen 1                 0.513618    
+## ProcessorSnapdragon 6s Gen 3                    0.897386    
+## ProcessorSnapdragon 7 Gen 1                     0.197968    
+## ProcessorSnapdragon 7 Gen 3                     0.166284    
+## ProcessorSnapdragon 7+ Gen 2                    0.425680    
+## ProcessorSnapdragon 710                         0.841728    
+## ProcessorSnapdragon 720G                        0.678381    
+## ProcessorSnapdragon 730G                        0.235041    
+## ProcessorSnapdragon 732G                        0.806241    
+## ProcessorSnapdragon 750G                        0.277610    
+## ProcessorSnapdragon 765G                        0.796351    
+## ProcessorSnapdragon 778G                        0.194844    
+## ProcessorSnapdragon 778G 4G                     0.395202    
+## ProcessorSnapdragon 7s Gen 2                    0.819432    
+## ProcessorSnapdragon 8 Gen 1                     0.050873 .  
+## ProcessorSnapdragon 8 Gen 2                     0.010016 *  
+## ProcessorSnapdragon 8 Gen 3           0.0000747634618257 ***
+## ProcessorSnapdragon 8+ Gen 1                    0.011170 *  
+## ProcessorSnapdragon 8+ Gen 1 4G                 0.000972 ***
+## ProcessorSnapdragon 8+ Gen 2                    0.147727    
+## ProcessorSnapdragon 855                         0.335942    
+## ProcessorSnapdragon 860                         0.740088    
+## ProcessorSnapdragon 865                         0.188812    
+## ProcessorSnapdragon 870                         0.208823    
+## ProcessorSnapdragon 888                         0.355466    
+## ProcessorSnapdragon 888 4G            0.0000185141460327 ***
+## ProcessorSnapdragon 888+ 5G                     0.115868    
+## ProcessorSpreadtrum SC8830                      0.399080    
+## ProcessorUnisoc SC9832E                         0.696722    
+## ProcessorUnisoc SC9863A                         0.791980    
+## ProcessorUnisoc T606                            0.461042    
+## ProcessorUnisoc T610                            0.361656    
+## ProcessorUnisoc T616                            0.769759    
+## ProcessorUnisoc T618                            0.863357    
+## ProcessorUnisoc T700                            0.433412    
+## ProcessorUnisoc T760                                  NA    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 162.2 on 322 degrees of freedom
+##   (420 observations deleted due to missingness)
+## Multiple R-squared:  0.8807, Adjusted R-squared:  0.8132 
+## F-statistic: 13.06 on 182 and 322 DF,  p-value: < 0.00000000000000022
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ RAM)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs RAM"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Price in USD"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"RAM Size"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Battery.Capacity.mAh)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Battery Capacity"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Price in USD"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Battery Capacity"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-26-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Back.Camera, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Back.Camera)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Camera Quality"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Back Camera (MP)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Price in USD"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Back Camera (MP)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Company.Name, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{fill =}\NormalTok{ Company.Name)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price Distribution by Brand"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Brand"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Price in USD"}\NormalTok{,}
+       \AttributeTok{fill =} \StringTok{"Brand"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Screen.Size.inches, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Screen.Size.inches)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Screen Size"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Screen Size (inches)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Price in USD"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Screen Size"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p1 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ RAM, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ RAM)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}  
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs RAM"}\NormalTok{, }\AttributeTok{x =} \StringTok{"RAM (GB)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{)}
+
+\NormalTok{p2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Battery.Capacity.mAh, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Battery.Capacity.mAh)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Battery Capacity"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Battery Capacity (mAh)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{)}
+
+\NormalTok{p3 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Back.Camera, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Back.Camera)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Camera Quality"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Back Camera (MP)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{)}
+
+\NormalTok{p4 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Screen.Size.inches, }\AttributeTok{y =}\NormalTok{ Launched.Price.USA.USD, }\AttributeTok{color =}\NormalTok{ Screen.Size.inches)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{size =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Price vs Screen Size"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Screen Size (inches)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Price (USD)"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(p1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(p2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-30-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(p3)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-30-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(p4)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-3_files/figure-latex/unnamed-chunk-30-4.pdf}
+
+Part 4: Personal Findings -- What Affects Mobile Phone Prices?
+
+Based on the data analysis, visualizations, and regression results,
+several factors influence mobile phone prices. 1. Key Factors Affecting
+Price RAM (GB) -- Strongest Predictor of Price Higher RAM leads to
+higher prices.
+
+From the scatter plot: Phones with more RAM tend to be significantly
+more expensive. From the regression model: RAM has a highly significant
+positive coefficient (p \textless{} 0.001), meaning that every
+additional GB of RAM increases the price. Camera Quality (MP) --
+Moderate Impact Higher camera resolution (Back MP) slightly increases
+price. The scatter plot shows a weak positive relationship. However, the
+Back Camera coefficient is not significant (p = 0.79), meaning camera MP
+alone may not be the main factor. Some brands charge higher prices for
+better camera optimization, sensors, and image processing.
+
+Screen Size -- Moderate Influence
+
+Larger screens increase price, but not drastically. From the scatter
+plot: A slight positive trend exists. From the regression model: The
+Screen Size coefficient is significant (p = 0.001), meaning that bigger
+screens contribute to price increases but not as strongly as RAM.
+
+Battery Capacity (mAh) -- Weak or No Impact
+
+Battery size does not strongly influence price. The scatter plot shows
+no clear trend. The regression model shows a small negative impact (p
+\textless{} 0.001), meaning that bigger batteries are sometimes found in
+budget devices, which slightly lowers their price.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Brand Influence on Price
+\end{enumerate}
+
+Brand plays a major role in pricing strategy. From the boxplot of price
+by brand: Apple and Samsung dominate the high-end price range. Infinix,
+Realme, and Lenovo target budget markets. From the regression model:
+Brands like Apple, Samsung, and Sony have a positive price effect,
+meaning their products are priced higher even with similar specs. Brands
+like Huawei, Honor, and Vivo have lower price coefficients, meaning they
+offer more affordable options.
+
+Luxury branding and ecosystem lock-in strategies contribute to price
+variations. 3. Processor Type and Performance
+
+High-end processors significantly increase phone prices. From the
+regression model: Flagship processors like Snapdragon 8 Gen, Kirin 9000,
+and A-series (Apple) strongly increase price. Mid-range processors
+(Snapdragon 6 Gen, Dimensity 900) have smaller price effects. Premium
+chipsets impact gaming, AI processing, and long-term software support,
+making them costlier.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Regression Model Insights
+\end{enumerate}
+
+The multiple regression model explains \textasciitilde88\% of the price
+variation (R² = 0.88).
+
+Significant Predictors of Price: RAM (p \textless{} 0.001) -- Every
+additional GB increases price. Screen Size (p = 0.001) -- Larger screens
+contribute to higher costs. Battery Capacity (p \textless{} 0.001,
+negative impact) -- Some big battery phones are budget models. Brand and
+Processor Type -- Flagship brands and high-end processors raise prices.
+
+Conclusion
+
+Main factors driving phone prices: RAM size is the most important factor
+-- More RAM = higher price. Camera MP alone doesn't guarantee higher
+price, but sensor quality does. Screen size has a moderate effect on
+pricing. Battery capacity does not strongly impact price. Brand name and
+processor type significantly influence price -- Apple, Samsung, and
+premium processors are highly priced.
+
+\end{document}
