@@ -1,0 +1,945 @@
+---
+title: "Data Vizualization , Homework 4"
+author: "Arman Manukyan"
+date: "2025-03-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = FALSE)
+options(tinytex.verbose = TRUE)
+
+options(scipen = 999)
+
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(knitr)
+library(reticulate)
+library(forecast)
+library(GGally)
+library(reshape2)
+library(corrplot)
+library(magrittr)
+library(ggmosaic)
+library(treemap)
+library(treemapify)
+library(ggfortify)
+library(fpp2)
+```
+
+Part 1: Trend Analysis (R or Python)
+1. Analyse trend of goals per season. For example total goals per match, average goals per match. (Python
+or R)
+2. Goal Distribution Per Season. Use appropriate type of graphs for goals per match, year-wise. Color-
+code by whether average is above or below 2.5 (over/under bet threshold).
+3. Create line charts for each season. Visualize trend of goals for each team that played in that season.
+Highlight only Bayern Munchen with red color. Rest should be gray. Add appropriate title that will
+contain information about season and total scored goals. Add footnote mentioning total number of
+goals scored by Bayern Munchen for that season. Save all graphs in pdf.
+
+```{r}
+bundesliga <- read.csv("bundesliga.csv")
+bundesliga2 <- read.csv("bundesliga2.csv")
+bundesliga <- bundesliga %>%
+  mutate(TOTAL_GOALS = FTHG + FTAG)
+bundesliga
+```
+
+```{r}
+goals_per_season <- bundesliga %>%
+  mutate(TotalGoals = FTHG + FTAG) %>%
+  group_by(SEASON) %>%
+  summarise(
+    total_goals   = sum(TotalGoals, na.rm = TRUE),
+    total_matches = n(),
+    avg_goals     = mean(TotalGoals, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+goals_per_season
+```
+
+
+1.Total and Average Goals Per Season
+```{r}
+
+goals_summary <- bundesliga %>%
+  group_by(SEASON) %>%
+  summarise(
+    TotalGoals = sum(TOTAL_GOALS),
+    Matches = n(),
+    AvgGoalsPerMatch = TotalGoals / Matches
+  )
+
+ggplot(goals_summary, aes(x = SEASON)) +
+  geom_col(aes(y = TotalGoals), fill = "steelblue") +
+  geom_line(aes(y = AvgGoalsPerMatch * 100, group = 1), color = "red", linewidth = 1) +
+  scale_y_continuous(
+    name = "Total Goals",
+    sec.axis = sec_axis(~ . / 100, name = "Avg Goals per Match")
+  ) +
+  labs(title = "Total and Average Goals per Season", x = "Season") +
+  theme_minimal()
+
+```
+```{r}
+ggplot(goals_per_season, aes(x = as.factor(SEASON), y = total_goals)) +
+  geom_col() +
+  labs(
+    title = "Total Goals per Season",
+    x = "Season",
+    y = "Total Goals"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggplot(goals_per_season, aes(x = as.factor(SEASON), y = avg_goals, group = 1)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Average Goals per Match per Season",
+    x = "Season",
+    y = "Average Goals per Match"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+2. Goal Distribution Per Match, by Season (Over/Under 2.5 Goals)
+```{r}
+
+goals_distribution <- bundesliga %>%
+  mutate(Over_Under = ifelse(TOTAL_GOALS > 2.5, "Over 2.5", "Under 2.5"))
+
+ggplot(goals_distribution, aes(x = TOTAL_GOALS, fill = Over_Under)) +
+  geom_histogram(binwidth = 1, color = "white") +
+  facet_wrap(~SEASON) +
+  scale_fill_manual(values = c("red", "blue")) +
+  labs(title = "Goal Distribution Per Match by Season",
+       x = "Goals per Match",
+       y = "Frequency",
+       fill = "Betting Threshold") +
+  theme_minimal()
+
+```
+
+```{r}
+bundesliga_plus <- bundesliga %>%
+  mutate(TotalGoals = FTHG + FTAG) %>%
+  left_join(goals_per_season %>% select(SEASON, avg_goals),
+            by = "SEASON")
+
+bundesliga_plus <- bundesliga_plus %>%
+  mutate(
+    over_under_indicator = ifelse(avg_goals > 2.5, "Over 2.5", "Under 2.5")
+  )
+
+ggplot(bundesliga_plus, aes(x = as.factor(SEASON), y = TotalGoals, 
+                            fill = over_under_indicator)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Goals per Match by Season",
+    x = "Season",
+    y = "Goals in a Match",
+    fill = "Avg Goals > 2.5?"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+3.Team Goal Trends per Season (Highlight Bayern Munich)
+
+```{r}
+library(tidyverse)
+library(tidyr)
+team_goals <- bundesliga %>%
+  pivot_longer(cols = c(HOMETEAM, AWAYTEAM), names_to = "SIDE", values_to = "TEAM") %>%
+  mutate(GOALS = ifelse(SIDE == "HOMETEAM", FTHG, FTAG)) %>%
+  group_by(SEASON, TEAM) %>%
+  summarise(SeasonGoals = sum(GOALS), .groups = 'drop')
+
+pdf("Team_Goals_By_Season.pdf", width = 10, height = 6) ## Save visualizations per season as a single PDF
+
+for (s in unique(team_goals$SEASON)) {
+  season_data <- filter(team_goals, SEASON == s)
+  bayern_goals <- season_data %>% filter(TEAM == "Bayern Munich") %>% pull(SeasonGoals)
+  total_goals <- sum(season_data$SeasonGoals)
+
+  p <- ggplot(season_data, aes(x = reorder(TEAM, -SeasonGoals), y = SeasonGoals,
+                               fill = TEAM == "Bayern Munich")) +
+    geom_col(show.legend = FALSE) +
+    scale_fill_manual(values = c("gray", "red")) +
+    labs(
+      title = paste("Team Goals in Season", s),
+      subtitle = paste("Total Goals in Season:", total_goals),
+      caption = paste("Bayern Munich Total Goals:", bayern_goals),
+      x = "Team", y = "Goals Scored"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+  print(p)
+}
+
+dev.off()
+
+```
+```{r}
+bundesliga_long <- bundesliga %>%
+  mutate(TotalGoalsMatch = FTHG + FTAG) %>%
+  select(SEASON, DATE, HOMETEAM, AWAYTEAM, FTHG, FTAG, TotalGoalsMatch) %>%
+  tidyr::pivot_longer(
+    cols = c(HOMETEAM, AWAYTEAM),
+    names_to = "HomeAwayFlag",
+    values_to = "TEAM"
+  ) %>%
+  mutate(
+    GoalsForThatTeam = ifelse(HomeAwayFlag == "HOMETEAM", FTHG, FTAG),
+    DATE = as.Date(DATE)  # Ensure DATE is in Date format
+  ) %>%
+  arrange(SEASON, DATE) %>%
+  group_by(SEASON, TEAM) %>%
+  mutate(
+    cum_goals = cumsum(GoalsForThatTeam)
+  ) %>%
+  ungroup()
+
+# Step 2: Compute total goals per season (if not already available)
+goals_per_season <- bundesliga %>%
+  group_by(SEASON) %>%
+  summarise(
+    total_goals = sum(FTHG + FTAG),
+    total_matches = n(),
+    avg_goals = total_goals / total_matches
+  )
+
+pdf("Part1_Seasonal_Trends.pdf", width = 10, height = 6)
+
+seasons_list <- unique(bundesliga_long$SEASON)
+for(season in seasons_list){
+  
+  df_season <- bundesliga_long %>% filter(SEASON == season)
+  
+  total_goals_this_season <- goals_per_season %>%
+    filter(SEASON == season) %>%
+    pull(total_goals)
+  
+  bayern_goals <- df_season %>%
+    filter(TEAM %in% c("Bayern Munich", "Bayern Munchen")) %>%
+    slice_tail(n = 1) %>%
+    pull(cum_goals)
+  
+  p <- ggplot(df_season, aes(x = DATE, y = cum_goals, group = TEAM)) +
+    geom_line(color = "gray80") +
+    geom_line(
+      data = df_season %>% filter(TEAM %in% c("Bayern Munich", "Bayern Munchen")),
+      color = "red", size = 1
+    ) +
+    labs(
+      title = paste0("Season: ", season, 
+                     " | Total Goals in League: ", total_goals_this_season),
+      x = "Date",
+      y = "Cumulative Goals",
+      caption = paste("Bayern's total goals this season:", bayern_goals)
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))  
+  
+  print(p)
+}
+
+dev.off()
+
+```
+
+Part 2: Home Advantage Deconstructed (R or Python)
+1. Create Heatmap of Home vs. Away Wins per Team per Season
+2. Point Differential Density: Create visualizations that will show difference per team for home and away
+game wins
+
+Part 2.1: Heatmap of Home vs. Away Wins per Team per Season
+
+```{r}
+home_wins <- bundesliga %>%
+  filter(FTHG > FTAG) %>%
+  group_by(SEASON, HOMETEAM) %>%
+  summarise(HomeWins = n(), .groups = "drop") %>%
+  rename(TEAM = HOMETEAM)
+
+away_wins <- bundesliga %>%
+  filter(FTAG > FTHG) %>%
+  group_by(SEASON, AWAYTEAM) %>%
+  summarise(AwayWins = n(), .groups = "drop") %>%
+  rename(TEAM = AWAYTEAM)
+
+win_counts <- full_join(home_wins, away_wins, by = c("SEASON", "TEAM")) %>%
+  replace_na(list(HomeWins = 0, AwayWins = 0))
+
+heatmap_data <- win_counts %>%
+  pivot_longer(cols = c(HomeWins, AwayWins), names_to = "WinType", values_to = "Wins")
+
+ggplot(heatmap_data, aes(x = factor(SEASON), y = TEAM, fill = Wins)) +
+  geom_tile() +
+  facet_wrap(~WinType) +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(
+    title = "Heatmap of Home vs Away Wins per Team per Season",
+    x = "Season", y = "Team", fill = "Wins"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  
+    axis.text.y = element_text(size = 6)  
+  )
+
+```
+```{r}
+library(tidyverse)
+
+
+home_wins <- bundesliga %>%
+  filter(FTHG > FTAG) %>%
+  count(SEASON, TEAM = HOMETEAM, name = "HomeWins")
+
+
+away_wins <- bundesliga %>%
+  filter(FTAG > FTHG) %>%
+  count(SEASON, TEAM = AWAYTEAM, name = "AwayWins")
+
+
+win_counts <- full_join(home_wins, away_wins, by = c("SEASON", "TEAM")) %>%
+  replace_na(list(HomeWins = 0, AwayWins = 0)) %>%
+  pivot_longer(cols = c(HomeWins, AwayWins), names_to = "WinType", values_to = "Wins")
+
+
+filtered_teams <- win_counts %>%
+  group_by(TEAM) %>%
+  summarise(total_wins = sum(Wins)) %>%
+  filter(total_wins > 30) %>%
+  pull(TEAM)
+
+win_counts <- win_counts %>%
+  filter(TEAM %in% filtered_teams)
+
+
+team_order <- win_counts %>%
+  group_by(TEAM) %>%
+  summarise(total = sum(Wins)) %>%
+  arrange(desc(total)) %>%
+  pull(TEAM)
+
+win_counts$TEAM <- factor(win_counts$TEAM, levels = team_order)
+
+ggplot(win_counts, aes(x = factor(SEASON), y = TEAM, fill = Wins)) +
+  geom_tile(color = "white") +
+  facet_wrap(~WinType, ncol = 1, labeller = labeller(WinType = c("HomeWins" = "🏠 Home Wins", "AwayWins" = "🚗 Away Wins"))) +
+  scale_fill_gradient(low = "white", high = "darkblue") +
+  labs(
+    title = "🏟️ Heatmap of Home vs Away Wins per Team per Season",
+    x = "Season", y = "Team", fill = "Wins"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
+    axis.text.y = element_text(size = 7),
+    strip.text = element_text(size = 12, face = "bold"),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+
+```
+
+Part 2.2: Point Differential Density (Home vs. Away)
+
+```{r}
+bundesliga_points <- bundesliga %>%
+  mutate(
+    HomePoints = case_when(
+      FTHG > FTAG ~ 3,
+      FTHG == FTAG ~ 1,
+      TRUE ~ 0
+    ),
+    AwayPoints = case_when(
+      FTAG > FTHG ~ 3,
+      FTHG == FTAG ~ 1,
+      TRUE ~ 0
+    )
+  )
+
+home_points <- bundesliga_points %>%
+  group_by(SEASON, TEAM = HOMETEAM) %>%
+  summarise(HomeTotal = sum(HomePoints), .groups = "drop")
+
+away_points <- bundesliga_points %>%
+  group_by(SEASON, TEAM = AWAYTEAM) %>%
+  summarise(AwayTotal = sum(AwayPoints), .groups = "drop")
+
+point_diff <- full_join(home_points, away_points, by = c("SEASON", "TEAM")) %>%
+  replace_na(list(HomeTotal = 0, AwayTotal = 0)) %>%
+  mutate(PointDiff = HomeTotal - AwayTotal)
+
+ggplot(point_diff, aes(x = PointDiff)) +
+  geom_density(fill = "steelblue", alpha = 0.7) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Density of Home vs Away Point Differential",
+    x = "Home - Away Points",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+ggplot(point_diff, aes(x = PointDiff)) +
+  geom_density(fill = "steelblue", alpha = 0.6) +
+  geom_vline(xintercept = mean(point_diff$PointDiff), color = "darkgreen", linetype = "dotted", linewidth = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Density of Home vs Away Point Differential (Team-Level)",
+    subtitle = "Dashed line = 0 (No Advantage), Dotted = Mean Differential",
+    x = "Home Points - Away Points",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+```
+
+
+Part 3: (R or Python)
+1. Team Trajectories and Volatility
+• Seasonal Position Trajectories
+• Line plots showissng seasonal ranks for top 6 teams.
+• Annotate title-winning seasons.
+2. Volatility Index
+• For each team, calculate standard deviation of final rank over all seasons.
+• Use a bar chart with conditional coloring (e.g., red = unstable, green = consistent).
+• Add text labels above each bar with exact values.
+
+Part 3.1: Team Position Trajectories (Top 6 Teams)
+```{r}
+top6_teams <- bundesliga2 %>%
+  filter(POSITION <= 6)
+
+top6_teams <- top6_teams %>%
+  mutate(Champion = ifelse(POSITION == 1, TEAM, NA))
+
+ggplot(top6_teams, aes(x = SEASON, y = POSITION, group = TEAM, color = TEAM)) +
+  geom_line() +
+  geom_point() +
+  scale_y_reverse(breaks = 1:6) +
+  geom_text(aes(label = Champion), vjust = -0.5, size = 2.5, na.rm = TRUE) +
+  labs(
+    title = "Seasonal Position Trajectories (Top 6 Teams)",
+    subtitle = "Labels show league champions",
+    x = "Season", y = "Final Position"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+```
+
+```{r}
+top6_teams <- bundesliga2 %>%
+  filter(POSITION <= 6)
+
+top6_teams <- top6_teams %>%
+  mutate(Champion = ifelse(POSITION == 1, TEAM, NA))
+
+ggplot(top6_teams, aes(x = SEASON, y = POSITION)) +
+  geom_line(aes(group = TEAM), color = "steelblue", linewidth = 1) +
+  geom_point(color = "darkblue", size = 2) +
+  geom_text(aes(label = Champion), vjust = -1, size = 2.5, na.rm = TRUE, fontface = "bold", color = "firebrick") +
+  facet_wrap(~ TEAM, ncol = 3) +
+  scale_y_reverse(breaks = 1:6) +
+  labs(
+    title = "Top 6 Team Position Trajectories by Season",
+    subtitle = "Each panel shows one team's final ranks. Bold labels = champions.",
+    x = "Season", y = "Final League Position"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", size = 14)
+  )
+
+
+```
+
+```{r}
+library(tidyverse)
+
+top6_teams <- bundesliga2 %>%
+  filter(POSITION <= 6)
+
+top6_teams <- top6_teams %>%
+  mutate(Champion = ifelse(POSITION == 1, TEAM, NA))
+top6_active <- top6_teams %>%
+  count(TEAM) %>%
+  filter(n > 2) %>%
+  pull(TEAM)
+
+top6_teams <- top6_teams %>%
+  filter(TEAM %in% top6_active)
+
+ggplot(top6_teams, aes(x = SEASON, y = POSITION)) +
+  geom_line(color = "darkblue", linewidth = 1) +
+  geom_point(color = "blue", size = 2) +
+  geom_text(aes(label = Champion), vjust = -0.9, size = 2.8, fontface = "bold", color = "red", na.rm = TRUE) +
+  facet_wrap(~ TEAM, ncol = 4) +
+  scale_y_reverse(breaks = 1:6) +
+  labs(
+    title = "Top 6 Team Position Trajectories by Season",
+    subtitle = "Each panel shows one team's top-6 league positions.\nRed bold labels mark seasons they were champions.",
+    x = "Season", y = "Final League Position"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    strip.text = element_text(face = "bold", size = 11),
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 10),
+    panel.spacing = unit(1, "lines")
+  )
+
+```
+
+Part 3.2: Volatility Index
+
+```{r}
+volatility <- bundesliga2 %>%
+  group_by(TEAM) %>%
+  summarise(Volatility = sd(POSITION), .groups = "drop")
+
+volatility <- volatility %>%
+  mutate(Consistency = case_when(
+    Volatility < 2 ~ "Stable",
+    Volatility < 4 ~ "Moderate",
+    TRUE ~ "Unstable"
+  ))
+
+color_map <- c("Stable" = "green", "Moderate" = "orange", "Unstable" = "red")
+
+ggplot(volatility, aes(x = reorder(TEAM, Volatility), y = Volatility, fill = Consistency)) +
+  geom_col() +
+  geom_text(aes(label = round(Volatility, 2)), vjust = -0.3, size = 3) +
+  scale_fill_manual(values = color_map) +
+  labs(
+    title = "Volatility Index of Teams (Standard Deviation of Final Positions)",
+    x = "Team", y = "Standard Deviation of Rank",
+    fill = "Stability Level"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+```
+```{r}
+volatility <- bundesliga2 %>%
+  group_by(TEAM) %>%
+  summarise(Volatility = sd(POSITION, na.rm = TRUE), .groups = "drop")
+
+volatility <- volatility %>%
+  mutate(Consistency = case_when(
+    Volatility < 2 ~ "Stable",
+    Volatility < 4 ~ "Moderate",
+    TRUE ~ "Unstable"
+  ))
+
+color_map <- c("Stable" = "green", "Moderate" = "orange", "Unstable" = "red")
+
+ggplot(volatility, aes(x = reorder(TEAM, Volatility), y = Volatility, fill = Consistency)) +
+  geom_col() +
+  geom_text(aes(label = round(Volatility, 2)), vjust = -0.3, size = 3) +
+  scale_fill_manual(values = color_map) +
+  labs(
+    title = "Volatility Index of Bundesliga Teams",
+    subtitle = "Measured by Standard Deviation of Final Season Ranks",
+    x = "Team", y = "Volatility (SD of Rank)",
+    fill = "Stability"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title = element_text(face = "bold")
+  )
+
+```
+
+Part 4: Rivalries & Big Match Patterns (R or Python)
+1. Head-to-Head Matrix for Selected Rivalries
+• Select 5 key rivalries more info click here .
+• Create a facet grid of win/draw/loss bar charts per rivalry.
+• Annotate biggest win margins.
+2. Upset Visualizer
+2
+• Define “upset” as a team >8 places below beating a top-5 team.
+• Scatterplot of upsets: x-axis = rank difference, y-axis = goal difference.
+• Encode team colors; highlight and label famous upsets
+Note you can define top 5 by most points, most scorred goals, less consided goals.
+
+
+```{r}
+rivalries <- tribble(
+  ~Team1, ~Team2, ~Label,
+  "Bayern Munich", "Dortmund", "Der Klassiker",
+  "Dortmund", "Schalke", "Revierderby",
+  "Hamburg", "Werder Bremen", "Nordderby",
+  "Bayern Munich", "Stuttgart", "Südderby",
+  "FC Koln", "Leverkusen", "Rheinisches Derby"
+)
+
+# Create all rivalry games
+rivalry_games <- bundesliga %>%
+  semi_join(rivalries, by = c("HOMETEAM" = "Team1")) %>%
+  filter((AWAYTEAM %in% rivalries$Team2) |
+         (HOMETEAM %in% rivalries$Team2 & AWAYTEAM %in% rivalries$Team1))
+
+rivalry_games <- rivalry_games %>%
+  mutate(
+    Result = case_when(
+      FTHG > FTAG ~ "Home Win",
+      FTAG > FTHG ~ "Away Win",
+      TRUE ~ "Draw"
+    ),
+    Matchup = pmap_chr(list(HOMETEAM, AWAYTEAM), function(ht, at) {
+      label <- rivalries %>% filter((Team1 == ht & Team2 == at) | (Team1 == at & Team2 == ht)) %>% pull(Label)
+      if (length(label) == 0) return("Other") else return(label)
+    }),
+    Margin = abs(FTHG - FTAG)
+  ) %>%
+  filter(Matchup != "Other")
+
+biggest_wins <- rivalry_games %>%
+  group_by(Matchup) %>%
+  filter(Margin == max(Margin)) %>%
+  slice(1) %>%
+  ungroup()
+
+ggplot(rivalry_games, aes(x = Result, fill = Result)) +
+  geom_bar(show.legend = FALSE) +
+  facet_wrap(~Matchup, scales = "free_y") +
+  geom_text(data = biggest_wins,
+            aes(label = paste0("Biggest Win: ", FTSC),
+                x = Result, y = 1),
+            inherit.aes = FALSE,
+            hjust = 0, vjust = -0.8, size = 3, color = "black") +
+  labs(
+    title = "Win/Draw/Loss Patterns in Top Bundesliga Rivalries",
+    x = "Match Result", y = "Number of Matches"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+rivalries <- tribble(
+  ~Team1, ~Team2, ~Label,
+  "Bayern Munich", "Dortmund", "Der Klassiker",
+  "Dortmund", "Schalke", "Revierderby",
+  "Hamburg", "Werder Bremen", "Nordderby",
+  "Bayern Munich", "Stuttgart", "Südderby",
+  "FC Koln", "Leverkusen", "Rheinisches Derby"
+)
+
+# Filter games that match either direction of the rivalry
+rivalry_games <- bundesliga %>%
+  filter(
+    (paste(HOMETEAM, AWAYTEAM) %in% paste(rivalries$Team1, rivalries$Team2)) |
+    (paste(HOMETEAM, AWAYTEAM) %in% paste(rivalries$Team2, rivalries$Team1))
+  ) %>%
+  mutate(
+    Matchup = case_when(
+      (HOMETEAM == "Bayern Munich" & AWAYTEAM == "Dortmund") | (HOMETEAM == "Dortmund" & AWAYTEAM == "Bayern Munich") ~ "Der Klassiker",
+      (HOMETEAM == "Dortmund" & AWAYTEAM == "Schalke") | (HOMETEAM == "Schalke" & AWAYTEAM == "Dortmund") ~ "Revierderby",
+      (HOMETEAM == "Hamburg" & AWAYTEAM == "Werder Bremen") | (HOMETEAM == "Werder Bremen" & AWAYTEAM == "Hamburg") ~ "Nordderby",
+      (HOMETEAM == "Bayern Munich" & AWAYTEAM == "Stuttgart") | (HOMETEAM == "Stuttgart" & AWAYTEAM == "Bayern Munich") ~ "Südderby",
+      (HOMETEAM == "FC Koln" & AWAYTEAM == "Leverkusen") | (HOMETEAM == "Leverkusen" & AWAYTEAM == "FC Koln") ~ "Rheinisches Derby",
+      TRUE ~ NA_character_
+    ),
+    Result = case_when(
+      FTHG > FTAG ~ "Home Win",
+      FTAG > FTHG ~ "Away Win",
+      TRUE ~ "Draw"
+    ),
+    GoalMargin = abs(FTHG - FTAG),
+    ScoreLabel = paste0(FTHG, "-", FTAG)
+  ) %>%
+  filter(!is.na(Matchup))
+
+# Find the biggest win per rivalry
+biggest_wins <- rivalry_games %>%
+  group_by(Matchup) %>%
+  filter(GoalMargin == max(GoalMargin)) %>%
+  slice(1) %>%  
+  ungroup()
+
+
+ggplot(rivalry_games, aes(x = Result, fill = Result)) +
+  geom_bar(show.legend = FALSE) +
+  facet_wrap(~ Matchup, scales = "free_y") +
+  geom_text(data = biggest_wins,
+            aes(label = paste("Biggest Win:", HOMETEAM, ScoreLabel, AWAYTEAM),
+                x = Result, y = 1),
+            inherit.aes = FALSE,
+            hjust = 0, vjust = -0.5, size = 2.8, color = "black") +
+  labs(
+    title = "Win/Draw/Loss Patterns in Key Bundesliga Rivalries",
+    subtitle = "Biggest win annotations shown above bars",
+    x = "Match Result", y = "Match Count"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# 1. Create standard pairing columns
+rivalries_std <- rivalries %>%
+  mutate(
+    Team_A = pmin(Team1, Team2),
+    Team_B = pmax(Team1, Team2)
+  ) %>%
+  select(Team_A, Team_B, Label)
+
+# 2. Create same columns for games
+rivalry_games <- bundesliga %>%
+  mutate(
+    Team_A = pmin(HOMETEAM, AWAYTEAM),
+    Team_B = pmax(HOMETEAM, AWAYTEAM)
+  ) %>%
+  left_join(rivalries_std, by = c("Team_A", "Team_B")) %>%
+  filter(!is.na(Label))  # keep only matched rivalries
+
+# 3. Add result and margin info
+rivalry_games <- rivalry_games %>%
+  mutate(
+    Result = case_when(
+      FTHG > FTAG ~ "Home Win",
+      FTHG < FTAG ~ "Away Win",
+      TRUE ~ "Draw"
+    ),
+    Margin = abs(FTHG - FTAG),
+    Score = FTSC
+  )
+
+# 4. Summarize results
+rivalry_results <- rivalry_games %>%
+  group_by(Label, Result) %>%
+  summarise(Count = n(), .groups = "drop")
+
+# 5. Find biggest win per rivalry
+biggest_win <- rivalry_games %>%
+  group_by(Label) %>%
+  filter(Margin == max(Margin)) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(Label, HOMETEAM, AWAYTEAM, Score, Margin)
+
+# 6. Final plot
+ggplot(rivalry_results, aes(x = Result, y = Count, fill = Result)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  facet_wrap(~Label, scales = "free_y") +
+  geom_text(data = biggest_win,
+            aes(x = 2, y = Inf, label = paste0("Biggest Win: ", HOMETEAM, " ", Score, " ", AWAYTEAM)),
+            inherit.aes = FALSE, vjust = 1.2, size = 3, color = "black") +
+  labs(
+    title = "Head-to-Head Rivalry Outcomes in Bundesliga",
+    x = "Result", y = "Match Count"
+  ) +
+  theme_minimal()
+
+
+```
+```{r}
+pdf("Rivalry_Head_to_Head_Charts.pdf", width = 10, height = 6)
+
+ggplot(rivalry_results, aes(x = Result, y = Count, fill = Result)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  facet_wrap(~Label, scales = "free_y") +
+  geom_text(data = biggest_win,
+            aes(x = 2, y = Inf, label = paste0("Biggest Win: ", HOMETEAM, " ", Score, " ", AWAYTEAM)),
+            inherit.aes = FALSE, vjust = 1.2, size = 3, color = "black") +
+  labs(
+    title = "Head-to-Head Rivalry Outcomes in Bundesliga",
+    x = "Result", y = "Match Count"
+  ) +
+  theme_minimal()
+
+dev.off()
+
+```
+
+```{r}
+# Define top 5 teams per season by goals scored
+top_teams <- bundesliga2 %>%
+  arrange(SEASON, desc(GF)) %>%
+  group_by(SEASON) %>%
+  slice_max(order_by = GF, n = 5) %>%
+  mutate(Top5 = TRUE) %>%
+  select(SEASON, TEAM, Top5)
+
+# Team ranks
+all_ranks <- bundesliga2 %>%
+  select(SEASON, TEAM, POSITION)
+
+upset_data <- bundesliga %>%
+  left_join(all_ranks, by = c("SEASON", "HOMETEAM" = "TEAM")) %>%
+  rename(HomeRank = POSITION) %>%
+  left_join(all_ranks, by = c("SEASON", "AWAYTEAM" = "TEAM")) %>%
+  rename(AwayRank = POSITION)
+
+# Determine upsets
+upsets <- upset_data %>%
+  mutate(
+    Winner = case_when(
+      FTHG > FTAG ~ HOMETEAM,
+      FTAG > FTHG ~ AWAYTEAM,
+      TRUE ~ NA_character_
+    ),
+    Loser = case_when(
+      FTHG > FTAG ~ AWAYTEAM,
+      FTAG > FTHG ~ HOMETEAM,
+      TRUE ~ NA_character_
+    ),
+    WinnerRank = case_when(
+      FTHG > FTAG ~ HomeRank,
+      FTAG > FTHG ~ AwayRank,
+      TRUE ~ NA_real_
+    ),
+    LoserRank = case_when(
+      FTHG > FTAG ~ AwayRank,
+      FTAG > FTHG ~ HomeRank,
+      TRUE ~ NA_real_
+    ),
+    GoalDiff = abs(FTHG - FTAG),
+    RankDiff = LoserRank - WinnerRank
+  ) %>%
+  filter(!is.na(WinnerRank), !is.na(LoserRank)) %>%
+  filter(RankDiff > 8)
+
+# Keep only if loser was a top 5 team
+upsets <- upsets %>%
+  left_join(top_teams, by = c("SEASON", "Loser" = "TEAM")) %>%
+  filter(Top5 == TRUE)
+
+# Pick 5 most dramatic upsets
+highlight_upsets <- upsets %>%
+  slice_max(order_by = GoalDiff, n = 5)
+
+# Plot
+ggplot(upsets, aes(x = RankDiff, y = GoalDiff, color = Winner)) +
+  geom_point(alpha = 0.7, size = 2) +
+  geom_text(data = highlight_upsets,
+            aes(label = paste0(Winner, " vs ", Loser)),
+            vjust = -0.8, size = 2.5, show.legend = FALSE) +
+  labs(
+    title = "Upset Visualizer: Lower-ranked Teams Beating Top-5 Teams",
+    subtitle = "X-axis = Rank Difference; Y-axis = Goal Difference",
+    x = "Rank Difference (Loser - Winner)",
+    y = "Goal Difference",
+    color = "Winner"
+  ) +
+  theme_minimal()
+
+
+```
+Part 5: Overall performance (R and Python)
+• Define unique color for each team per season. For each season create horizontal bar plot using total
+number of points. Highlighting the winner with the unique color that you assigned to it. Save all
+graphs in pdf. (R)
+• Redo the same task in python. But instead of total points use goal difference. Use same logic for colors
+as in first part. (Python)
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Assign unique colors to teams
+team_colors <- bundesliga2 %>%
+  distinct(TEAM) %>%
+  mutate(Color = sample(colors(), n(), replace = FALSE))
+
+seasonal_data <- bundesliga2 %>%
+  left_join(team_colors, by = "TEAM")
+
+pdf("Overall_Performance_Points_R.pdf", width = 10, height = 6)
+
+for (s in sort(unique(seasonal_data$SEASON))) {
+  season_df <- filter(seasonal_data, SEASON == s)
+  winner <- season_df %>% filter(POSITION == 1) %>% pull(TEAM)
+
+  gg <- ggplot(season_df, aes(x = reorder(TEAM, POINTS), y = POINTS)) +
+    geom_col(aes(fill = TEAM == winner)) +
+    scale_fill_manual(values = c("gray", season_df$Color[season_df$TEAM == winner])) +
+    coord_flip() +
+    labs(
+      title = paste("Season", s, "- Total Points per Team"),
+      subtitle = paste("Winner:", winner),
+      x = "Team", y = "Points"
+    ) +
+    theme_minimal()
+
+  print(gg)
+}
+
+dev.off()
+
+```
+Part 6. Monte Carlo simulation. (R or Python)
+Use Monte Carlo simulation to predict how many goals will Bayern Munchen score for next 10 seasons. Re-
+peat the same for Bayer Leverkusen and Borusia Dortmund. Compare results using appropriate visualization
+technique.
+For more about monte carlo simulation click here
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+team_goals <- bundesliga %>%
+  pivot_longer(cols = c(HOMETEAM, AWAYTEAM), names_to = "SIDE", values_to = "TEAM") %>%
+  mutate(GOALS = ifelse(SIDE == "HOMETEAM", FTHG, FTAG)) %>%
+  group_by(SEASON, TEAM) %>%
+  summarise(TotalGoals = sum(GOALS), .groups = "drop")
+
+teams <- c("Bayern Munich", "Bayer Leverkusen", "Dortmund")
+
+selected_teams <- team_goals %>%
+  filter(TEAM %in% teams)
+
+set.seed(42)
+simulations <- selected_teams %>%
+  group_by(TEAM) %>%
+  summarise(HistoricalGoals = list(TotalGoals), .groups = "drop") %>%
+  rowwise() %>%
+  mutate(
+    SimulatedGoals = list(
+      replicate(1000, sum(sample(HistoricalGoals, 10, replace = TRUE)))
+    )
+  ) %>%
+  unnest(cols = c(SimulatedGoals))
+
+simulations <- simulations %>%
+  rename(Sum10Seasons = SimulatedGoals)
+ggplot(simulations, aes(x = TEAM, y = Sum10Seasons, fill = TEAM)) +
+  geom_boxplot() +
+  labs(
+    title = "Monte Carlo Simulation: Predicted Goals in Next 10 Seasons",
+    y = "Total Goals over 10 Seasons", x = "Team"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
