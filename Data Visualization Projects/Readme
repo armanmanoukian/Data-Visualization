@@ -1,1 +1,4 @@
 
+Influence of People's Age on Reading Frequency
+
+This project explores how people's habits evolve with age by analyzing two different datasets and presenting them through interactive R Shiny dashboards. The first dataset, sourced from Kaggle, focuses on global reading behavior, showing how age influences reading frequency and genre preferences. The second dataset contains Armenian cardholder sales transactions and gives insight into how age, gender, and time affect shopping behavior. Both dashboards rely on statistical summaries and various types of visualizations to uncover patterns. We used R and packages such as ggplot2, plotly, shiny, dplyr, lubridate, and moments. Visual outputs include scatter plots, bar charts, histograms, boxplots, line graphs, and density plots. By comparing both global and local behavior, we aimed to highlight how age continues to shape both what people consume intellectually and how they behave financially.
