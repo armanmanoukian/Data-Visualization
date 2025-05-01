@@ -1,0 +1,531 @@
+---
+title: "Data Visualization"
+author: 
+  - "Arman Manukyan"
+  - "Mariam Manukyan"
+date: "2025-04-19"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = FALSE)
+options(tinytex.verbose = TRUE)
+
+options(scipen = 999)
+library(ggplot2)       
+library(dplyr)         
+library(tidyr)         
+library(readr)         
+library(stringr)       
+library(forcats)       
+library(viridis)       
+library(RColorBrewer)  
+library(gridExtra)     
+library(treemapify)    
+library(corrplot)      
+library(GGally)        
+library(countrycode)   
+library(rworldmap) 
+library(ggmap)
+library(moments)
+library(sf)
+library(rnaturalearth)
+```
+
+```{r}
+df <- read.csv("fullData.csv")
+df
+```
+
+```{r Load & Clean the Data }
+df <- read.csv("fullData.csv")
+df_clean <- df %>%
+  filter(!is.na(Age), Age >= 10, Age <= 80) %>%
+  mutate(across(where(is.character), ~gsub("\\[|\\]", "", .)))
+df_clean
+
+```
+```{r}
+write.csv(df_clean, "cleaned_data12.csv", row.names = FALSE)
+```
+
+
+```{r}
+df_clean$genres <- str_replace_all(df_clean$genres, "'", "")
+df_clean$genres <- str_squish(df_clean$genres)
+```
+
+```{r}
+df_clean<-read.csv("cleaned_data.csv")
+df_clean
+```
+
+
+```{r Age Distribution of Readers  }
+ggplot(df_clean, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "#4682B4", color = "black", alpha = 0.8) +
+  geom_vline(aes(xintercept = mean(Age, na.rm = TRUE)), color = "red", linetype = "dashed", size = 1) +
+  labs(
+    title = " Age Distribution of Readers",
+    subtitle = "Grouped in bins of 5 years, with mean age line",
+    x = "Age (Years)",
+    y = "Number of Readers",
+    caption = "Source: Kaggle Reading Dataset (Cleaned)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, color = "#34495E"),
+    plot.caption = element_text(size = 10, face = "italic", color = "gray40"),
+    axis.title = element_text(face = "bold"),
+    panel.grid.major = element_line(color = "gray85"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+```{r Most Common Genres1 }
+df_genres <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  filter(genres != "") %>%
+  group_by(genres) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+ggplot(df_genres[1:15,], aes(x = reorder(genres, count), y = count)) +
+  geom_bar(stat = "identity", fill = "darkorange") +
+  coord_flip() +
+  labs(title = "Top 15 Most Common Genres", x = "Genre", y = "Count")
+
+```
+
+```{r Age Distribution per Genre (Top Genres Only) }
+
+top_genres <- df_genres$genres[1:6]
+
+df_filtered <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  filter(genres %in% top_genres)
+
+ggplot(df_filtered, aes(x = Age, fill = genres)) +
+  geom_histogram(binwidth = 5, position = "identity", alpha = 0.6) +
+  facet_wrap(~genres, scales = "free_y") +
+  labs(title = "Age Distribution for Top Genres", x = "Age", y = "Count")
+
+
+```
+```{r Age Distribution by Top Genres}
+top_genres <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  filter(genres != "") %>%
+  count(genres, sort = TRUE) %>%
+  slice_max(n, n = 6) %>%
+  pull(genres)
+
+df_box <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  filter(genres %in% top_genres)
+
+ggplot(df_box, aes(x = genres, y = Age, fill = genres)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title = "Age Distribution by Top Genres", x = "Genre", y = "Age") +
+  theme_minimal()
+
+```
+
+
+```{r Map of Reading Activity by Country (country-mapMap)}
+df_location <- df_clean %>%
+  mutate(Country = str_to_title(Location)) %>%
+  filter(!is.na(Country)) %>%
+  group_by(Country) %>%
+  summarise(Readers = n()) %>%
+  mutate(CountryCode = countrycode(Country, origin = "country.name", destination = "iso3c")) %>%
+  filter(!is.na(CountryCode))
+
+world <- map_data("world")
+
+world_map <- left_join(world, df_location, by = c("region" = "Country"))
+
+ggplot(world_map, aes(x = long, y = lat, group = group, fill = Readers)) +
+  geom_polygon(color = "white") +
+  scale_fill_gradient(low = "steelblue", high = "red", na.value = "grey90") +
+  labs(title = "Reader Count by Country") +
+  theme_void()
+```
+## 🏢 Top Publishers
+```{r top-publishers}
+df_clean %>%
+  count(Publisher, sort = TRUE) %>%
+  top_n(10, n) %>%
+  ggplot(aes(x = reorder(Publisher, n), y = n)) +
+  geom_col(fill = "purple") +
+  coord_flip() +
+  labs(title = "Top 10 Publishers by Number of Readers", x = "Publisher", y = "Count") +
+  theme_minimal()
+```
+
+```{r Number of Genres Read per Reader}
+
+# Prepare data
+df_per_user <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  group_by(User.ID, Age) %>%
+  summarise(num_genres = n_distinct(genres), .groups = "drop") %>%
+  mutate(age_group = cut(Age, breaks = c(10, 20, 30, 40, 50, 60, 100),
+                         labels = c("Teens", "20s", "30s", "40s", "50s", "60+")))
+
+# Calculate average genres
+avg_genres <- mean(df_per_user$num_genres, na.rm = TRUE)
+
+# Plot
+ggplot(df_per_user, aes(x = num_genres)) +
+  geom_histogram(binwidth = 1, fill = "seagreen", color = "black", alpha = 0.8) +
+  geom_density(aes(y = ..count..), color = "darkred", size = 1, linetype = "dashed") +
+  geom_vline(xintercept = avg_genres, linetype = "dotted", color = "blue", size = 1.2) +
+  annotate("text", x = avg_genres + 0.5, y = max(table(df_per_user$num_genres)) * 0.9,
+           label = paste("Avg:", round(avg_genres, 1)),
+           color = "blue", hjust = 0) +
+  labs(title = "Number of Genres Read Per Reader",
+       x = "Number of Distinct Genres",
+       y = "Number of Readers") +
+  theme_minimal()
+```
+
+```{r Skewness and Kurtosis of Age}
+skew_val <- skewness(df_clean$Age, na.rm = TRUE)
+kurt_val <- kurtosis(df_clean$Age, na.rm = TRUE)
+
+paste("Skewness:", round(skew_val, 2))
+paste("Kurtosis:", round(kurt_val, 2))
+
+```
+```{r}
+# Histogram with density curve
+ggplot(df_clean, aes(x = Age)) +
+  geom_histogram(aes(y = ..density..), binwidth = 5, fill = "lightblue", color = "black") +
+  geom_density(color = "darkred", size = 1) +
+  labs(title = "Age Distribution with Density Curve",
+       subtitle = paste0("Skewness: ", round(skewness(df_clean$Age, na.rm = TRUE), 2),
+                         ", Kurtosis: ", round(kurtosis(df_clean$Age, na.rm = TRUE), 2)),
+       x = "Age", y = "Density") +
+  theme_minimal()
+```
+
+```{r Fiction Popularity by Age (Advanced Regression + Plot)}
+# Expand genres and create binary indicator for Fiction
+df_fiction <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  mutate(is_fiction = ifelse(genres == "Fiction", 1, 0)) %>%
+  group_by(User.ID, Age) %>%
+  summarise(reads_fiction = max(is_fiction))  # 1 if user read fiction
+
+# Regression line
+ggplot(df_fiction, aes(x = Age, y = reads_fiction)) +
+  geom_jitter(width = 0.5, height = 0.1, alpha = 0.3, color = "gray50") +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  labs(title = "Fiction Reading Likelihood by Age",
+       x = "Age", y = "Reads Fiction (1 = Yes)") +
+  theme_minimal()
+
+```
+
+
+```{r Fiction Reading Likelihood by Age (Logistic Regression) }
+ggplot(df_fiction, aes(x = Age, y = reads_fiction)) +
+  geom_jitter(width = 0.5, height = 0.1, alpha = 0.3, color = "gray50") +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = TRUE, color = "blue") +
+  labs(title = "Fiction Reading Likelihood by Age (Logistic Regression)",
+       x = "Age", y = "Probability of Reading Fiction") +
+  theme_minimal()
+
+```
+
+```{r Facet Grid of Top Genres by Age Group }
+
+# Clean and expand
+df_faceted <- df_clean %>%
+  filter(!is.na(Age)) %>%
+  mutate(AgeGroup = cut(Age, breaks = c(10, 20, 30, 40, 50, 60, 100),
+                        labels = c("10s", "20s", "30s", "40s", "50s", "60+"))) %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  group_by(AgeGroup, genres) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  filter(!is.na(AgeGroup), genres != "")
+
+# Get top 10 genres *within each age group*
+top_genres_faceted <- df_faceted %>%
+  group_by(AgeGroup) %>%
+  top_n(10, count) %>%
+  ungroup()
+
+# Plot nicely sorted within facets
+ggplot(top_genres_faceted, aes(x = fct_reorder(genres, count), y = count, fill = AgeGroup)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~AgeGroup, scales = "free_y") +
+  labs(title = "Top 10 Genres by Age Group", x = "Genre", y = "Count") +
+  theme_minimal(base_size = 13) +
+  theme(strip.text = element_text(face = "bold"),
+        axis.text.y = element_text(size = 9))
+
+
+
+```
+
+```{r Age Distribution with Skewness and Kurtosis}
+ggplot(df_clean, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(title = "Distribution of Reader Age", x = "Age", y = "Frequency")
+
+paste("Skewness:", round(skewness(df_clean$Age), 2))
+paste("Kurtosis:", round(kurtosis(df_clean$Age), 2))
+```
+
+
+```{r Skewness & Kurtosis of Fiction Preference}
+# Prepare fiction reading rate per age group
+fiction_by_age <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  mutate(is_fiction = ifelse(genres == "Fiction", 1, 0)) %>%
+  group_by(Age) %>%
+  summarise(
+    fiction_rate = mean(is_fiction, na.rm = TRUE),
+    count = n()
+  ) %>%
+  filter(!is.na(fiction_rate))
+fiction_by_age
+
+```
+
+```{r}
+fiction_skew <- skewness(fiction_by_age$fiction_rate)
+fiction_kurt <- kurtosis(fiction_by_age$fiction_rate)
+
+data.frame(
+  Metric = c("Skewness", "Kurtosis"),
+  Value = c(round(fiction_skew, 2), round(fiction_kurt, 2))
+)
+
+```
+
+```{r Treemap of Top Genres}
+ggplot(df_genres[1:20,], aes(area = count, fill = genres, label = genres)) +
+  geom_treemap() +
+  geom_treemap_text(colour = "white", place = "centre", grow = TRUE) +
+  scale_fill_viridis_d(option = "plasma") +
+  labs(
+    title = "Treemap of Top Genres",
+    subtitle = "Proportional to number of mentions"
+  ) +
+  theme_bw()
+
+```
+
+
+```{r}
+df_loc_fiction <- df_clean %>%  
+  separate_rows(genres, sep = ",\\s*") %>%
+  mutate(FictionReader = ifelse(genres == "Fiction", 1, 0)) %>%
+  mutate(Country = str_to_title(Location)) %>%
+  mutate(CountryCode = countrycode(Country, origin = "country.name", destination = "iso3c")) %>%
+  filter(!is.na(CountryCode)) %>%
+  group_by(CountryCode) %>%
+  summarise(
+    Total_Readers = n(),
+    Fiction_Readers = sum(FictionReader, na.rm = TRUE),
+    Fiction_Rate = Fiction_Readers / Total_Readers,
+    .groups = "drop"
+  ) %>%
+  filter(Total_Readers >= 10)
+
+```
+
+
+```{r}
+# Get country names for merging
+df_loc_fiction$Country <- countrycode(df_loc_fiction$CountryCode, origin = "iso3c", destination = "country.name")
+
+# Map data
+world <- map_data("world")
+map_data_merged <- left_join(world, df_loc_fiction, by = c("region" = "Country"))
+
+# Plot
+ggplot(map_data_merged, aes(x = long, y = lat, group = group, fill = Fiction_Rate)) +
+  geom_polygon(color = "white") +
+  scale_fill_viridis_c(option = "inferno", na.value = "grey90", direction = -1) +
+  labs(
+    title = "Fiction Reading Rate by Country",
+    subtitle = "Only countries with ≥10 readers included",
+    fill = "Fiction Rate",
+    caption = "Fiction Rate = Number of  readers who read fiction / total readers"
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+
+```
+```{r Top 10 Countries by Number of Fiction Readers}
+
+# Show countries with highest total number of Fiction readers
+df_loc_fiction %>%
+  filter(Total_Readers >= 20) %>%
+  arrange(desc(Fiction_Readers)) %>%
+  slice_max(Fiction_Readers, n = 10) %>%
+  ggplot(aes(x = reorder(CountryCode, Fiction_Readers), y = Fiction_Readers)) +
+  geom_col(fill = "#6A51A3") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Countries by Number of Fiction Readers",
+    x = "Country",
+    y = "Number of Fiction Readers"
+  ) +
+  theme_minimal()
+
+
+```
+```{r Top 10 Countries by Total Fiction Readers }
+# Prepare data for meaningful lollipop
+top_fiction_count <- df_loc_fiction %>%
+  filter(Total_Readers >= 20) %>%
+  arrange(desc(Fiction_Readers)) %>%
+  slice_max(Fiction_Readers, n = 10)
+
+ggplot(top_fiction_count, aes(x = reorder(CountryCode, Fiction_Readers), y = Fiction_Readers)) +
+  geom_segment(aes(xend = CountryCode, y = 0, yend = Fiction_Readers), color = "#80CBC4", size = 1) +
+  geom_point(color = "#00897B", size = 4) +
+  geom_text(aes(label = Fiction_Readers), vjust = -0.8, size = 3.5) +
+  coord_flip() +
+  labs(
+    title = " Top 10 Countries by Total Fiction Readers",
+    subtitle = "Only countries with at least 20 readers included",
+    x = "Country",
+    y = "Number of Fiction Readers"
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+```{r Genre Diversity by Country}
+df_genre_diversity <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  mutate(Country = str_to_title(Location)) %>%
+  group_by(Country) %>%
+  summarise(Unique_Genres = n_distinct(genres)) %>%
+  filter(!is.na(Country))
+
+ggplot(df_genre_diversity, aes(x = reorder(Country, Unique_Genres), y = Unique_Genres)) +
+  geom_col(fill = "#FB6A4A") +
+  coord_flip() +
+  labs(
+    title = "Genre Diversity by Country",
+    x = "Country",
+    y = "Unique Genres"
+  )+
+  theme_minimal()
+
+```
+
+```{r Number of Genres Read by Age}
+df_user_genre_count <- df_clean %>%
+  separate_rows(genres, sep = ",\\s*") %>%
+  group_by(User.ID, Age) %>%
+  summarise(GenreCount = n_distinct(genres), .groups = "drop") %>%
+  mutate(AgeGroup = cut(Age, breaks = c(10, 20, 30, 40, 50, 60, 80),
+                        labels = c("10s", "20s", "30s", "40s", "50s", "60+")))
+
+ggplot(df_user_genre_count, aes(x = Age, y = GenreCount)) +
+  geom_smooth(method = "loess", se = TRUE, color = "#00796B", fill = "#B2DFDB") +
+  labs(
+    title = "Average Genre Diversity by Age",
+    subtitle = "LOESS smoothed curve with 95% confidence interval",
+    x = "Age",
+    y = "Number of Distinct Genres"
+  ) +
+  theme_minimal()
+
+
+```
+
+```{r Average Reader Age by Country}
+# Load clean dataset
+df_clean <- read.csv("cleaned_data.csv")  # assuming cleaned_data.csv already exists
+
+# Calculate Average Reader Age by Country
+avg_age_by_country <- df_clean %>%
+  mutate(Country = countrycode(Location, origin = "country.name", destination = "country.name")) %>%
+  filter(!is.na(Country), !is.na(Age)) %>%
+  group_by(Country) %>%
+  summarise(Average_Age = round(mean(Age, na.rm = TRUE), 1), .groups = "drop")
+
+# Read world shapefile using sf
+world_sf <- rnaturalearth::ne_countries(returnclass = "sf")
+
+# Merge average age data with world spatial data
+map_sf <- world_sf %>%
+  left_join(avg_age_by_country, by = c("name" = "Country"))
+
+# Plot the map
+ggplot(map_sf) +
+  geom_sf(aes(fill = Average_Age)) +
+  scale_fill_viridis_c(option = "plasma", direction = -1, na.value = "grey90") +
+  labs(
+    title = "Average Reader Age by Country",
+    subtitle = "Based on user-reported age, grouped by country",
+    fill = "Avg. Age",
+    caption = "Source: Kaggle Reading Dataset (Cleaned)"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12, color = "gray30"),
+    plot.caption = element_text(size = 10, face = "italic", color = "gray40"),
+    legend.position = "bottom"
+  )
+
+```
+
+```{r Proportion of Young Readers by Country}
+# Read world shapefile
+world_sf <- rnaturalearth::ne_countries(returnclass = "sf")
+
+# Prepare young reader data
+young_rate_by_country <- df_clean %>%
+  mutate(Country = countrycode(Location, origin = "country.name", destination = "country.name"),
+         Is_Young = ifelse(Age < 25, 1, 0)) %>%
+  filter(!is.na(Country)) %>%
+  group_by(Country) %>%
+  summarise(Young_Rate = mean(Is_Young, na.rm = TRUE))
+
+# Merge with world map
+map_sf <- world_sf %>%
+  left_join(young_rate_by_country, by = c("name" = "Country"))
+
+# Plot
+ggplot(map_sf) +
+  geom_sf(aes(fill = Young_Rate)) +
+  scale_fill_viridis_c(option = "inferno", na.value = "grey90") +
+  labs(
+    title = "Proportion of Young Readers by Country",
+    fill = "Proportion < 25"
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+```
+```{r}
+df_country_pie <- df_clean %>%
+  filter(!is.na(Location), Location != "") %>%  # <- This line removes missing / blank
+  count(Location, sort = TRUE) %>%
+  slice_max(n, n = 10)
+
+ggplot(df_country_pie, aes(x = "", y = n, fill = Location)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Top 10 Countries by Reader Count") +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+```
+

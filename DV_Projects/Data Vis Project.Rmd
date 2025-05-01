@@ -1,0 +1,126 @@
+---
+title: "Data Visualization"
+author: "Arman Manukyan" 
+        "Mariam Manukyan"
+date: "2025-04-19"
+output: 
+flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+    theme: readable
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(plotly)
+library(DT)
+library(moments)
+library(magrittr)
+library(ggthemes)
+library(viridis)
+library(RColorBrewer)
+library(data.table)
+library(summarytools)
+library(parameters)
+library(jsonlite)
+library(tidyr)
+
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+df <- read.csv("fullData.csv")
+
+df_clean <- df %>%
+  filter(!is.na(Age), Age >= 10, Age <= 80) %>%
+  mutate(
+    # Clean string manually: remove square brackets and quotes, split into real character vector
+    genres_clean = gsub("\\[|\\]|'", "", genres),
+    genres_list = strsplit(genres_clean, ", "),
+    likes_fiction = map_lgl(genres_list, ~ "Fiction" %in% .x),
+    age_group = cut(Age, breaks = c(10,20,30,40,50,60,70,80), 
+                    labels = c("10–20","21–30","31–40","41–50","51–60","61–70","71–80"), right = FALSE)
+  )
+
+df_exploded <- df_clean %>% unnest(genres_list)
+
+fiction_by_age <- df_clean %>%
+  group_by(Age) %>%
+  summarise(fiction_rate = mean(likes_fiction))
+
+fiction_skew <- skewness(fiction_by_age$fiction_rate)
+fiction_kurt <- kurtosis(fiction_by_age$fiction_rate)
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+valueBox(
+  value = nrow(df_clean),
+  caption = "Clean Readers",
+  icon = "fa-users"
+)
+
+valueBox(
+  value = paste0(round(mean(df_clean$likes_fiction)*100, 1), "%"),
+  caption = "Fiction Lovers",
+  icon = "fa-book"
+)
+
+valueBox(
+  value = round(fiction_skew, 2),
+  caption = "Skewness of Fiction Preference",
+  icon = "fa-chart-area"
+)
+
+valueBox(
+  value = round(fiction_kurt, 2),
+  caption = "Kurtosis of Fiction Preference",
+  icon = "fa-signal"
+)
+
+```
+
+### Chart C
+
+```{r}
+genre_age_plot <- df_exploded %>%
+  group_by(age_group, genres) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = age_group, y = count, fill = genres)) +
+  geom_col(position = "stack") +
+  labs(title = "Genre Distribution by Age Group", x = "Age Group", y = "Read Count") +
+  theme_minimal()
+
+ggplotly(genre_age_plot)
+
+```
+```{r}
+fiction_plot <- ggplot(fiction_by_age, aes(x = Age, y = fiction_rate)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Fiction Preference by Age", y = "Fiction Preference Rate") +
+  theme_minimal()
+
+ggplotly(fiction_plot)
+
+```
+
+
+```{r}
+datatable(df_clean %>% select(User_ID = `User-ID`, Age, Location, likes_fiction, age_group))
+```
+

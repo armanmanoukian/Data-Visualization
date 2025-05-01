@@ -1,0 +1,160 @@
+---
+title: "Data Visualization"
+author: "Arman Manukyan, Mariam Manukyan"
+date: "2025-04-19"
+Professor: " Gurgen Hovakimyan"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    tabset: true
+    editor_options:
+      chunk_output_type: console
+    theme:
+      version: 4
+      bg: "#101010"
+      fg: "#FDF7F7"
+      primary: "#ED79F9"
+      navbar-bg: "#3ADAC6"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Sen
+      code_font:
+        google:
+          family: JetBrains Mono
+          local: false
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(plotly)
+library(DT)
+library(moments)
+library(magrittr)
+library(ggthemes)
+library(viridis)
+library(RColorBrewer)
+library(data.table)
+library(summarytools)
+library(parameters)
+library(jsonlite)
+library(tidyr)
+``` 
+
+```{r data_load}
+file_path <- "fullData.csv"
+
+if (file.exists(file_path)) {
+  fulldata <- read.csv(file_path)
+  cat("✅ Data successfully read into 'fulldata'.\n")
+} else {
+  stop("❌ File 'fullData.csv' not found in working directory. Please check the file path.")
+}
+``` 
+
+
+### Reading Frequency by Age
+
+```{r}
+data_Age_Frequency <- fulldata %>%
+  filter(!is.na(Age), Age > 10, Age < 65) %>%
+  group_by(Age) %>%
+  summarise(frequency = n())
+
+ggplot(data_Age_Frequency, aes(x = Age, y = frequency)) +
+  geom_line(color = "blue", linewidth = 1) +
+  geom_point(color = "red", size = 2) +
+  labs(x = "Age", y = "Reading Frequency", title = "How Reading Frequency Changes with Age") +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(10, 65, 5)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+```
+
+### Reading Frequency by Top Genres and Age Group
+
+```{r}
+fulldata <- fulldata %>%
+  filter(!is.na(Age), Age > 10 & Age < 65) %>%
+  mutate(genres = gsub("\\[|\\]|'", "", genres)) %>%
+  separate_rows(genres, sep = ",\\s*")
+
+data_Genre_Frequency <- fulldata %>%
+  mutate(Age_Group = cut(Age, breaks = seq(10, 65, 5), right = FALSE)) %>%
+  group_by(genres, Age_Group) %>%
+  summarise(frequency = n(), .groups = "drop")
+
+top_genres <- data_Genre_Frequency %>%
+  group_by(genres) %>%
+  summarise(total_frequency = sum(frequency)) %>%
+  arrange(desc(total_frequency)) %>%
+  slice_head(n = 10) %>%
+  pull(genres)
+
+data_Genre_Frequency <- data_Genre_Frequency %>%
+  filter(genres %in% top_genres)
+
+ggplot(data_Genre_Frequency, aes(x = Age_Group, y = frequency, fill = genres)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(x = "Age Group", y = "Reading Frequency", title = "Reading Frequency by Top Genres and Age Group") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "bottom")
+```
+
+### Age Distribution of Nonfiction Readers
+
+```{r}
+nonfiction_rows <- fulldata[grep("Nonfiction", fulldata$genres), ] %>%
+  filter(!is.na(Age), Age > 10, Age < 65)
+
+nonfiction_age <- nonfiction_rows %>% summarise(mean_age = mean(Age))
+print(nonfiction_age)
+
+ggplot(nonfiction_rows, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "darkgreen", alpha = 0.7, color = "black") +
+  labs(x = "Age", y = "Frequency", title = "Distribution of Ages for Nonfiction Readers") +
+  theme_minimal()
+```
+
+### Frequency of Fiction Genre by Age
+
+```{r}
+fiction_rows <- fulldata[grep("Fiction", fulldata$genres), ] %>%
+  filter(!is.na(Age), Age > 10, Age < 65)
+
+fiction_age <- fiction_rows %>%
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")
+
+ggplot(fiction_age, aes(x = Age, y = frequency)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  geom_smooth(method = "lm", se = TRUE, color = "darkgreen") +
+  labs(x = "Age", y = "Frequency", title = "Frequency of Fiction Genre by Age") +
+  ylim(0, max(fiction_age$frequency) * 1.1)
+```
+
+```{r}
+corelation <- cor(fiction_age$Age, fiction_age$frequency)
+print(corelation)
+```
+
+### Fiction vs Other Genres: Ages 15–40
+
+```{r}
+fiction_15_40 <- fiction_rows %>%
+  filter(Age >= 15 & Age <= 40) %>%
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")
+
+other_genres <- fulldata %>%
+  filter(!grepl("Fiction", genres), !is.na(Age), Age >= 15 & Age <= 40) %>%
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")
+
+t_test <- t.test(fiction_15_40$frequency, other_genres$frequency, alternative = "greater")
+print(t_test)
+```

@@ -1,0 +1,281 @@
+---
+subject: IESM324
+title: Influence of People's Age on Reading Frequency over the years considering interfering
+  factors
+author: "Mariam Manukyan, Masis Sarkis Sarkissian, Tigran Markosyan"
+date: "2024-10-12"
+---
+
+Data is taken from Kaggle: https://www.kaggle.com/datasets?search=book+readers
+
+Hypothesis:
+- H₀ (Null Hypothesis): Fiction is not more popular among ages 15–40 compared to other genres.
+- H₁ (Alternative Hypothesis): Fiction is more popular among ages 15–40 compared to other genres.
+
+Data: 
+- We have data collected for 3524 readers.
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# Load necessary libraries
+if (!requireNamespace("utils", quietly = TRUE)) {
+  install.packages("utils")
+}
+
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+if (!requireNamespace("tidyr", quietly = TRUE)) {
+  install.packages("tidyr")
+}
+
+```
+
+
+First, we wrote codes to filter and remove the rows were we have 
+* We filter Age column NA values
+
+
+# Load the data file 
+
+```{r Loading a data file}
+# Let the user browse for the file
+file_path <- "fullData.csv"
+
+# Read the data into the variable 'fulldata'
+fulldata <- read.csv(file_path)
+
+# Display a message to confirm successful reading
+cat("Data successfully read into the variable 'fulldata'.\n")
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Process the data: Count reading frequency by age
+data_Age_Frequency <- fulldata %>%
+  filter(!is.na(Age), Age > 10, Age < 65) %>%  # Filter valid ages
+  group_by(Age) %>%  # Group by age
+  summarise(frequency = n())  # Count the number of entries for each age
+
+# Display the processed data
+print(data_Age_Frequency)
+
+# Plot: Reading frequency changes with age
+ggplot(data = data_Age_Frequency, aes(x = Age, y = frequency)) +
+  geom_line(color = "blue", linewidth = 1) +  # Use `linewidth` instead of `size`
+  geom_point(color = "red", size = 2) +  # Keep `size` for points
+  labs(
+    x = "Age",
+    y = "Reading Frequency",
+    title = "How Reading Frequency Changes with Age"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(10, 65, 5)) +  # Adjust x-axis ticks
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))  # Clean y-axis
+
+
+```
+Insights from the Visual:
+Trend: Fiction engagement is highest between ages 25–35 and starts to decline after age 40.
+
+Let's see information on analysis about Genres:
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Process the data: Clean and split genres
+fulldata <- fulldata %>%
+  filter(!is.na(Age), Age > 10 & Age < 65) %>%
+  mutate(genres = gsub("\\[|\\]|'", "", genres)) %>%
+  separate_rows(genres, sep = ",\\s*")
+
+# Group by genres and age groups
+data_Genre_Frequency <- fulldata %>%
+  mutate(Age_Group = cut(Age, breaks = seq(10, 65, 5), right = FALSE)) %>%
+  group_by(genres, Age_Group) %>%
+  summarise(frequency = n(), .groups = "drop")
+
+# Focus on the top 10 most popular genres
+top_genres <- data_Genre_Frequency %>%
+  group_by(genres) %>%
+  summarise(total_frequency = sum(frequency)) %>%
+  arrange(desc(total_frequency)) %>%
+  slice_head(n = 10) %>%
+  pull(genres)
+
+data_Genre_Frequency <- data_Genre_Frequency %>%
+  filter(genres %in% top_genres)
+
+# Plot: Reading frequency for top genres by age group
+ggplot(data = data_Genre_Frequency, aes(x = Age_Group, y = frequency, fill = genres)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +  # Use a visually appealing palette
+  labs(
+    x = "Age Group",
+    y = "Reading Frequency",
+    title = "Reading Frequency by Top Genres and Age Group"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels
+    legend.position = "bottom"  # Move legend to the bottom for better layout
+  )
+
+
+```
+
+What does this give to Book Producers?
+
+- Target Popular Genres: Focus on genres with high frequency in key age groups (e.g., Fiction for 20-40).
+- Expand Genre Appeal: Develop strategies for less popular genres in underrepresented age groups.
+- Optimize Marketing:Tailor campaigns to age-group-specific genre preferences.
+
+
+
+NEXT PLOT 
+
+We separate the data having the only genre "Nonfiction" and afterwards only "fiction". 
+We grouped the data set by Age and Calculate the mean rating for each age group and used this to plot a scatter plot.
+Then we find the line of best fit. We calculate the slope with cor function, which calculates the correlation between age and mean rating for non-fiction genres.
+
+We get a plot with linear regression line.
+
+```{r}
+# Filter rows containing 'Nonfiction' in the genres column
+nonfiction_occurrences <- grep("Nonfiction", fulldata$genres)
+nonfiction_rows <- fulldata[nonfiction_occurrences, ]
+
+# Process Nonfiction data: Calculate mean age
+nonfiction_age <- nonfiction_rows %>%
+  filter(!is.na(Age), Age > 10, Age < 65) %>%  # Filter valid ages
+  summarise(mean_age = mean(Age))  # Calculate mean age
+
+# View the processed data
+print(nonfiction_age)
+
+# Plot: Distribution of Nonfiction Readers by Age
+ggplot(data = nonfiction_rows, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "darkgreen", alpha = 0.7, color = "black") +  # Histogram for age distribution
+  labs(
+    x = "Age",
+    y = "Frequency",
+    title = "Distribution of Ages for Nonfiction Readers"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+The age of Nonfiction readers may have a minimal inverse relationship with the metric analyzed (e.g., frequency or rating).
+In practical terms, as readers grow older, their engagement with the Nonfiction genre slightly declines, but the effect is not significant.
+
+```{r}
+
+
+# Filter rows containing 'Fiction' in the genres column
+fiction_occurrences <- grep("Fiction", fulldata$genres)
+fiction_rows <- fulldata[fiction_occurrences, ]
+
+# Process Fiction data: Calculate frequency by age
+fiction_age <- fiction_rows %>%
+  filter(!is.na(Age), Age > 10, Age < 65) %>%  # Filter valid ages
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")  # Count occurrences of Fiction by age
+
+# View the processed data
+print(fiction_age)
+
+# Plot: Frequency of Fiction Genre by Age
+ggplot(data = fiction_age, aes(x = Age, y = frequency)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +  # Scatter plot
+  geom_smooth(formula = y ~ x, method = "lm", se = TRUE, color = "darkgreen") +  # Linear trend line
+  labs(
+    x = "Age",
+    y = "Frequency",
+    title = "Frequency of Fiction Genre by Age"
+  ) +
+  ylim(0, max(fiction_age$frequency) * 1.1)  # Dynamically adjust y-axis limits
+
+# Calculate correlation between Age and Frequency
+corelation <- cor(fiction_age$Age, fiction_age$frequency)
+corelation
+
+
+
+```
+Visual Insights:
+Trend:
+- The scatter plot shows a slight downward trend in Fiction frequency as age increases.
+- Younger readers (20–30) seem to engage more with Fiction, with peak frequency near the mid-20s.
+- Engagement drops gradually for older age groups (40–60).
+Also:
+- There is variability in Fiction readership across all age groups, but the trend suggests Fiction appeals slightly less to older readers.
+
+Correlation Coefficient (-0.1503):
+- The value indicates a very weak negative correlation.
+- Fiction frequency slightly decreases as age increases, but the relationship is not strong enough to suggest age is a dominant factor.
+
+- Age has a minimal impact on Fiction readership, meaning other factors (like genre preferences or access) might explain engagement more than age alone.
+- Fiction appeals broadly across ages but shows higher engagement among younger (15-25) demographics.
+
+Producers should:
+- Target younger readers with campaigns and content aligned to their preferences.
+Reinvigorate older audiences by introducing subgenres or formats (e.g., audiobooks) that cater to their interests.
+
+
+```{r}
+# Filter Fiction data for ages 15–40
+fiction_occurrences <- grep("Fiction", fulldata$genres)
+fiction_rows <- fulldata[fiction_occurrences, ]
+
+fiction_15_40 <- fiction_rows %>%
+  filter(!is.na(Age), Age >= 15 & Age <= 40) %>%
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")  # Frequency of Fiction by age
+
+# Filter data for other genres for ages 15–40
+other_genres <- fulldata %>%
+  filter(!grepl("Fiction", genres), !is.na(Age), Age >= 15 & Age <= 40) %>%
+  group_by(Age) %>%
+  summarise(frequency = n(), .groups = "drop")  # Frequency of other genres by age
+
+# Compare frequencies using a t-test
+t_test <- t.test(fiction_15_40$frequency, other_genres$frequency, alternative = "greater")
+
+# Print the t-test results
+print(t_test)
+
+
+
+```
+p-value = 5.938e-09 < 0.05 : The p-value is less than 0.05, so we reject H₀.
+
+The Welch Two Sample t-test was conducted to compare the engagement between Fiction and other genres among readers aged 15–40. The null hypothesis (H_0) assumed no significant difference in engagement, while the alternative hypothesis (H_1) proposed that Fiction has significantly higher engagement.
+The test results showed a p-value of "5.938e-0", which is significantly less than 0.05.
+
+Thus, we reject the null hypothesis and conclude that Fiction indeed exhibits significantly higher engagement compared to other genres in this demographic.
+
+Conclusion:
+
+- The lack of significant difference implies that Fiction is dominant among this demographic. 
+- Producers should concentrate on Fiction sales, however we would recommend to also diversify offerings across genres and explore factors beyond age to identify potential areas for growth.
+
+- We accept H1 Hypothesis, as we reject null hypothesis.
+
+Business Side:
+- Producers should concentrate on Fiction sales, but give a strike to other genres as well spread/popular between different ages.
+
+
