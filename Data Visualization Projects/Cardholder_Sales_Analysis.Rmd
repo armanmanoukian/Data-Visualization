@@ -1,0 +1,198 @@
+---
+title: "final_structured_cardholders"
+author: "Arman Manukyan"
+date: "2025-05-01"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = FALSE)
+options(tinytex.verbose = TRUE)
+
+options(scipen = 999)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(moments)
+library(viridis)
+library(gridExtra)
+library(corrplot)
+library(GGally)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(scales)
+library(cowplot)
+library(ggpubr)
+```
+
+```{r}
+df <- read.csv("final_structured_cardholders1.csv")
+df$Date <- suppressWarnings(ymd(df$Date))
+df$Datetime <- as.POSIXct(paste(df$Date, df$Time))
+df$Hour <- hour(df$Datetime)
+df$Weekday <- weekdays(df$Date)
+df$Month <- format(df$Date, "%Y-%m")
+df
+```
+
+```{r Gender Distribution }
+ggplot(df, aes(x=Gender, fill=Gender)) +
+  geom_bar() +
+  labs(title="Gender Distribution", y="Count") +
+  theme_minimal()
+
+```
+```{r Revenue by Gender }
+df %>%
+  group_by(Gender) %>%
+  summarise(AvgRevenue = mean(Revenue)) %>%
+  ggplot(aes(x = Gender, y = AvgRevenue, fill = Gender)) +
+  geom_col() +
+  labs(title = "Average Revenue per Transaction by Gender", y = "Average Revenue") +
+  theme_minimal()
+
+```
+
+```{r Revenue by Age Group }
+df %>%
+  mutate(AgeGroup = cut(Age, breaks = c(0, 18, 25, 35, 45, 55, 65, Inf),
+                        labels = c("0–18", "19–25", "26–35", "36–45", "46–55", "56–65", "65+"))) %>%
+  group_by(AgeGroup) %>%
+  summarise(AvgRevenue = mean(Revenue)) %>%
+  ggplot(aes(x = AgeGroup, y = AvgRevenue, fill = AgeGroup)) +
+  geom_col() +
+  labs(title = "Average Revenue by Age Group", x = "Age Group", y = "Average Revenue") +
+  theme_minimal()
+
+```
+
+```{r Age Distribution }
+ggplot(df, aes(x=Age)) +
+  geom_histogram(bins = 30, fill="skyblue", color="black") +
+  labs(title="Age Distribution", x="Age", y="Count") +
+  theme_minimal()
+
+```
+```{r}
+product_stats <- df %>%
+  group_by(Product) %>%
+  summarise(
+    TotalRevenue = sum(Revenue, na.rm = TRUE),
+    AvgPrice = mean(Revenue, na.rm = TRUE),
+    Count = n()
+  )
+
+```
+
+```{r Sales & Revenue Insights }
+top_products <- product_stats %>%
+  arrange(desc(TotalRevenue)) %>%
+  slice(1:15)
+
+ggplot(top_products, aes(x = reorder(Product, TotalRevenue), y = TotalRevenue, fill = AvgPrice)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_viridis_c(option = "C") +
+  labs(title = "Top 15 Products by Revenue (Color = Avg Price)",
+       x = "Product", y = "Total Revenue") +
+  theme_minimal()
+
+```
+```{r Revenue Over Time}
+df %>%
+  group_by(Month) %>%
+  summarise(MonthlyRevenue = sum(Revenue)) %>%
+  ggplot(aes(x=Month, y=MonthlyRevenue, group=1)) +
+  geom_line(color="darkred", size=1.2) +
+  geom_point(color="black") +
+  labs(title="Monthly Revenue Trend", x="Month", y="Revenue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle=45, hjust=1))
+
+```
+```{r Time-Based Patterns: Hourly Purchase Distribution }
+ggplot(df, aes(x=Hour)) +
+  geom_histogram(binwidth=1, fill="orange", color="black") +
+  labs(title="Hourly Purchase Distribution", x="Hour", y="Transactions") +
+  theme_minimal()
+
+```
+
+```{r Purchases by Weekday}
+df %>%
+  count(Weekday) %>%
+  ggplot(aes(x=reorder(Weekday, n), y=n)) +
+  geom_col(fill="purple") +
+  coord_flip() +
+  labs(title="Transactions by Weekday", x="Weekday", y="Count") +
+  theme_minimal()
+
+```
+
+
+```{r Age vs Revenue}
+df %>%
+  mutate(AgeGroup = cut(Age, breaks = c(0, 20, 30, 40, 50, 60, 70, Inf),
+                        labels = c("0–20", "21–30", "31–40", "41–50", "51–60", "61–70", "70+"))) %>%
+  ggplot(aes(x = AgeGroup, y = Revenue)) +
+  geom_boxplot(fill = "#9370DB") +
+  labs(title = "Revenue Distribution by Age Group", x = "Age Group", y = "Revenue") +
+  theme_minimal()
+
+```
+
+```{r Revenue Over Time by Gender (Trend Analysis)}
+df %>%
+  group_by(Month, Gender) %>%
+  summarise(TotalRevenue = sum(Revenue)) %>%
+  ggplot(aes(x = Month, y = TotalRevenue, color = Gender, group = Gender)) +
+  geom_line(size = 1.2) +
+  labs(title = "Monthly Revenue Trend by Gender", x = "Month", y = "Revenue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r Revenue Density Plot }
+ggplot(df, aes(x = Revenue)) +
+  geom_density(fill = "lightblue", alpha = 0.6) +
+  labs(title = "Revenue Density Plot", x = "Revenue", y = "Density") +
+  theme_minimal()
+```
+
+```{r Skewness and Kurtosis Summary  }
+library(moments)
+cat("Skewness of Revenue:", as.numeric(skewness(df$Revenue, na.rm = TRUE)), "\n")
+cat("Kurtosis of Revenue:", as.numeric(kurtosis(df$Revenue, na.rm = TRUE)), "\n")
+
+
+```
+```{r}
+revenue_summary <- summary(df$Revenue)
+
+mean_revenue <- mean(df$Revenue, na.rm = TRUE)
+median_revenue <- median(df$Revenue, na.rm = TRUE)
+sd_revenue <- sd(df$Revenue, na.rm = TRUE)
+min_revenue <- min(df$Revenue, na.rm = TRUE)
+max_revenue <- max(df$Revenue, na.rm = TRUE)
+quantiles_revenue <- quantile(df$Revenue, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+cv_revenue <- sd_revenue / mean_revenue  # Coefficient of Variation
+
+cat("Revenue Summary:\n")
+print(revenue_summary)
+cat("\nMean Revenue:", round(mean_revenue, 2), "\n")
+cat("Median Revenue:", round(median_revenue, 2), "\n")
+cat("Standard Deviation:", round(sd_revenue, 2), "\n")
+cat("Minimum Revenue:", round(min_revenue, 2), "\n")
+cat("Maximum Revenue:", round(max_revenue, 2), "\n")
+cat("25% Quantile:", round(quantiles_revenue[1], 2), "\n")
+cat("50% Quantile (Median):", round(quantiles_revenue[2], 2), "\n")
+cat("75% Quantile:", round(quantiles_revenue[3], 2), "\n")
+cat("Coefficient of Variation:", round(cv_revenue, 4), "\n")
+
+```
+
