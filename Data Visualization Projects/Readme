@@ -1,4 +1,58 @@
+📚 Influence of People's Age on Reading Frequency
 
-Influence of People's Age on Reading Frequency
+This project explores how people's habits evolve with age by analyzing two different datasets and presenting them through interactive R Shiny dashboards.
+📊 Datasets
 
-This project explores how people's habits evolve with age by analyzing two different datasets and presenting them through interactive R Shiny dashboards. The first dataset, sourced from Kaggle, focuses on global reading behavior, showing how age influences reading frequency and genre preferences. The second dataset contains Armenian cardholder sales transactions and gives insight into how age, gender, and time affect shopping behavior. Both dashboards rely on statistical summaries and various types of visualizations to uncover patterns. We used R and packages such as ggplot2, plotly, shiny, dplyr, lubridate, and moments. Visual outputs include scatter plots, bar charts, histograms, boxplots, line graphs, and density plots. By comparing both global and local behavior, we aimed to highlight how age continues to shape both what people consume intellectually and how they behave financially.
+    Dataset 1: Sourced from Kaggle, this dataset captures global reading behavior, highlighting how age influences both reading frequency and genre preferences.
+
+    Dataset 2: A local dataset of Armenian cardholder sales transactions, providing insight into how age, gender, and time impact shopping behavior.
+
+🔧 Tools & Packages
+
+The dashboards were built using R and the following packages:
+
+    shiny
+
+    ggplot2
+
+    plotly
+
+    dplyr
+
+    lubridate
+
+    moments
+
+📈 Visualizations
+
+A wide variety of visual outputs were created to reveal trends and distributions:
+
+    Scatter Plots
+
+    Bar Charts
+
+    Histograms
+
+    Boxplots
+
+    Line Graphs
+
+    Density Plots
+
+🎯 Objective
+
+By comparing global reading patterns with local consumer behavior, the project highlights how age plays a crucial role in shaping both:
+
+    Intellectual consumption (reading habits and genres)
+
+    Financial behavior (shopping patterns by time, age group, and gender)
+
+📂 Structure
+
+    ui.R and server.R: Code for the Shiny apps
+
+    cleaned_data.csv: Preprocessed dataset for global reading behavior
+
+    final_structured_cardholders1.csv: Cleaned Armenian transaction dataset
+
+    Visualizations and metrics are organized into multiple interactive tabs
