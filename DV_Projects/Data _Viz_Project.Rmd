@@ -3,7 +3,7 @@ title: "Data Visualization"
 author: 
   - "Arman Manukyan"
   - "Mariam Manukyan"
-date: "2025-04-19"
+date: "2025-05-01"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 options(tinytex.verbose = TRUE)
 
 options(scipen = 999)
@@ -50,7 +50,7 @@ df_clean
 
 ```
 ```{r}
-write.csv(df_clean, "cleaned_data12.csv", row.names = FALSE)
+write.csv(df_clean, "cleaned_data.csv", row.names = FALSE)
 ```
 
 
@@ -60,10 +60,44 @@ df_clean$genres <- str_squish(df_clean$genres)
 ```
 
 ```{r}
-df_clean<-read.csv("cleaned_data.csv")
 df_clean
 ```
 
+```{r}
+unique(df_clean$Location)
+
+```
+
+
+```{r}
+# Standardize country names for map merging
+df_clean1 <- df_clean %>%
+  mutate(Location = str_to_title(Location),
+         Location = trimws(Location),
+         Location = case_when(
+           Location == "Usa" ~ "United States",
+           Location == "Uk" ~ "United Kingdom",
+           Location == "England" ~ "United Kingdom",
+           Location == "Universe" ~ NA_character_,
+           TRUE ~ Location
+         )) %>%
+  mutate(Country = countrycode(Location, origin = "country.name", destination = "country.name")) %>%
+  filter(!is.na(Country))
+
+```
+
+```{r}
+df_clean1
+```
+
+```{r}
+write.csv(df_clean1, "df_newcleaned.csv", row.names = FALSE)
+```
+
+```{r}
+df_map<- read.csv("df_newcleaned.csv")
+df_map
+```
 
 ```{r Age Distribution of Readers  }
 ggplot(df_clean, aes(x = Age)) +
@@ -117,6 +151,9 @@ ggplot(df_filtered, aes(x = Age, fill = genres)) +
 
 
 ```
+
+
+
 ```{r Age Distribution by Top Genres}
 top_genres <- df_clean %>%
   separate_rows(genres, sep = ",\\s*") %>%
@@ -138,27 +175,41 @@ ggplot(df_box, aes(x = genres, y = Age, fill = genres)) +
 
 
 ```{r Map of Reading Activity by Country (country-mapMap)}
-df_location <- df_clean %>%
-  mutate(Country = str_to_title(Location)) %>%
+# Step 1: Clean country names in your dataset
+df_map <- df_map %>%
+  mutate(Country = countrycode(Country, origin = "country.name", destination = "country.name"))
+
+# Step 2: Summarize reader count
+df_readers <- df_map %>%
   filter(!is.na(Country)) %>%
   group_by(Country) %>%
-  summarise(Readers = n()) %>%
-  mutate(CountryCode = countrycode(Country, origin = "country.name", destination = "iso3c")) %>%
-  filter(!is.na(CountryCode))
+  summarise(Readers = n(), .groups = "drop")
 
-world <- map_data("world")
+# Step 3: Load world shapefile
+world_sf <- ne_countries(scale = "medium", returnclass = "sf")
 
-world_map <- left_join(world, df_location, by = c("region" = "Country"))
+# Step 4: Harmonize names: convert shapefile names to standard country names
+world_sf <- world_sf %>%
+  mutate(Country = countrycode(name, origin = "country.name", destination = "country.name"))
 
-ggplot(world_map, aes(x = long, y = lat, group = group, fill = Readers)) +
-  geom_polygon(color = "white") +
-  scale_fill_gradient(low = "steelblue", high = "red", na.value = "grey90") +
-  labs(title = "Reader Count by Country") +
-  theme_void()
+# Step 5: Merge your data with the world map
+map_sf <- world_sf %>%
+  left_join(df_readers, by = "Country")
+
+# Step 6: Plot the map
+ggplot(map_sf) +
+  geom_sf(aes(fill = Readers)) +
+  scale_fill_viridis(option = "C", na.value = "grey90") +
+  labs(title = "🌍 Reader Count by Country", fill = "Number of Readers") +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
 ```
 ## 🏢 Top Publishers
 ```{r top-publishers}
-df_clean %>%
+df %>%
   count(Publisher, sort = TRUE) %>%
   top_n(10, n) %>%
   ggplot(aes(x = reorder(Publisher, n), y = n)) +
@@ -171,7 +222,7 @@ df_clean %>%
 ```{r Number of Genres Read per Reader}
 
 # Prepare data
-df_per_user <- df_clean %>%
+df_per_user <- df %>%
   separate_rows(genres, sep = ",\\s*") %>%
   group_by(User.ID, Age) %>%
   summarise(num_genres = n_distinct(genres), .groups = "drop") %>%
@@ -344,29 +395,10 @@ df_loc_fiction <- df_clean %>%
 
 ```
 
-
 ```{r}
-# Get country names for merging
-df_loc_fiction$Country <- countrycode(df_loc_fiction$CountryCode, origin = "iso3c", destination = "country.name")
-
-# Map data
-world <- map_data("world")
-map_data_merged <- left_join(world, df_loc_fiction, by = c("region" = "Country"))
-
-# Plot
-ggplot(map_data_merged, aes(x = long, y = lat, group = group, fill = Fiction_Rate)) +
-  geom_polygon(color = "white") +
-  scale_fill_viridis_c(option = "inferno", na.value = "grey90", direction = -1) +
-  labs(
-    title = "Fiction Reading Rate by Country",
-    subtitle = "Only countries with ≥10 readers included",
-    fill = "Fiction Rate",
-    caption = "Fiction Rate = Number of  readers who read fiction / total readers"
-  ) +
-  theme_void() +
-  theme(legend.position = "bottom")
-
+df_loc_fiction
 ```
+
 ```{r Top 10 Countries by Number of Fiction Readers}
 
 # Show countries with highest total number of Fiction readers
@@ -450,69 +482,71 @@ ggplot(df_user_genre_count, aes(x = Age, y = GenreCount)) +
 ```
 
 ```{r Average Reader Age by Country}
-# Load clean dataset
-df_clean <- read.csv("cleaned_data.csv")  # assuming cleaned_data.csv already exists
-
-# Calculate Average Reader Age by Country
-avg_age_by_country <- df_clean %>%
-  mutate(Country = countrycode(Location, origin = "country.name", destination = "country.name")) %>%
+# Step 1: Standardize country names in your data
+df_age <- df_map %>%
+  mutate(Country = countrycode(Country, origin = "country.name", destination = "country.name")) %>%
   filter(!is.na(Country), !is.na(Age)) %>%
   group_by(Country) %>%
-  summarise(Average_Age = round(mean(Age, na.rm = TRUE), 1), .groups = "drop")
+  summarise(Average_Age = round(mean(Age), 1), .groups = "drop")
 
-# Read world shapefile using sf
-world_sf <- rnaturalearth::ne_countries(returnclass = "sf")
+# Step 2: Standardize country names in shapefile
+world_sf <- rnaturalearth::ne_countries(returnclass = "sf") %>%
+  mutate(Country = suppressWarnings(
+    countrycode(name, origin = "country.name", destination = "country.name")
+  ))
 
-# Merge average age data with world spatial data
+# Step 3: Merge shapefile with average age data
 map_sf <- world_sf %>%
-  left_join(avg_age_by_country, by = c("name" = "Country"))
+  left_join(df_age, by = "Country")
 
-# Plot the map
+# Step 4: Plot the map
 ggplot(map_sf) +
   geom_sf(aes(fill = Average_Age)) +
-  scale_fill_viridis_c(option = "plasma", direction = -1, na.value = "grey90") +
-  labs(
-    title = "Average Reader Age by Country",
-    subtitle = "Based on user-reported age, grouped by country",
-    fill = "Avg. Age",
-    caption = "Source: Kaggle Reading Dataset (Cleaned)"
-  ) +
+  scale_fill_viridis(option = "plasma", direction = -1, na.value = "grey90") +
+  labs(title = "Average Reader Age by Country", fill = "Avg Age") +
   theme_void() +
-  theme(
-    plot.title = element_text(face = "bold", size = 16),
-    plot.subtitle = element_text(size = 12, color = "gray30"),
-    plot.caption = element_text(size = 10, face = "italic", color = "gray40"),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
 ```
 
 ```{r Proportion of Young Readers by Country}
-# Read world shapefile
-world_sf <- rnaturalearth::ne_countries(returnclass = "sf")
-
-# Prepare young reader data
-young_rate_by_country <- df_clean %>%
-  mutate(Country = countrycode(Location, origin = "country.name", destination = "country.name"),
-         Is_Young = ifelse(Age < 25, 1, 0)) %>%
-  filter(!is.na(Country)) %>%
-  group_by(Country) %>%
-  summarise(Young_Rate = mean(Is_Young, na.rm = TRUE))
-
-# Merge with world map
-map_sf <- world_sf %>%
-  left_join(young_rate_by_country, by = c("name" = "Country"))
-
-# Plot
-ggplot(map_sf) +
-  geom_sf(aes(fill = Young_Rate)) +
-  scale_fill_viridis_c(option = "inferno", na.value = "grey90") +
-  labs(
-    title = "Proportion of Young Readers by Country",
-    fill = "Proportion < 25"
-  ) +
-  theme_void() +
-  theme(legend.position = "bottom")
+# Step 1: Prepare young reader data
+  young_rate_by_country <- df %>%
+    mutate(
+      Country = countrycode(Location, origin = "country.name", destination = "country.name"),
+      Is_Young = ifelse(Age < 25, 1, 0)
+    ) %>%
+    filter(!is.na(Country)) %>%
+    group_by(Country) %>%
+    summarise(Young_Rate = mean(Is_Young, na.rm = TRUE), .groups = "drop")
+  
+  # Step 2: Load world shapefile and harmonize names
+  world_sf <- rnaturalearth::ne_countries(returnclass = "sf") %>%
+    mutate(Country = suppressWarnings(
+      countrycode(name, origin = "country.name", destination = "country.name")
+    ))
+  
+  # Step 3: Merge
+  map_sf <- world_sf %>%
+    left_join(young_rate_by_country, by = "Country")
+  
+  # Step 4: Plot
+  ggplot(map_sf) +
+    geom_sf(aes(fill = Young_Rate)) +
+    scale_fill_viridis_c(option = "inferno", na.value = "grey90", labels = scales::percent_format(accuracy = 1)) +
+    labs(
+      title = "Proportion of Young Readers by Country",
+      subtitle = "Share of readers under 25 years old",
+      fill = "% Under 25",
+      caption = "Source: Cleaned Reading Dataset"
+    ) +
+    theme_void() +
+    theme(
+      legend.position = "bottom",
+      plot.title = element_text(face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 12, color = "gray30"),
+      plot.caption = element_text(size = 9, face = "italic", color = "gray50")
+    )
 ```
 ```{r}
 df_country_pie <- df_clean %>%
@@ -528,4 +562,10 @@ ggplot(df_country_pie, aes(x = "", y = n, fill = Location)) +
   theme(legend.title = element_blank())
 
 ```
+
+
+
+
+
+
 

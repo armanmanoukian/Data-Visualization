@@ -1,7 +1,7 @@
 ---
 title: "final_structured_cardholders"
 author: "Arman Manukyan"
-date: "2025-04-20"
+date: "2025-05-01"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -79,30 +79,41 @@ ggplot(df, aes(x=Age)) +
 
 ```
 ```{r}
-product_stats <- df %>%
+summary(df$Product)
+summary(df$Revenue)
+```
+```{r Top 15 Products by Revenue (Color = Avg Price)" }
+top_products <- df %>%
+  filter(!is.na(Product), !is.na(Revenue), !is.na(Quantity), Product != "") %>%
   group_by(Product) %>%
   summarise(
     TotalRevenue = sum(Revenue, na.rm = TRUE),
-    AvgPrice = mean(Revenue, na.rm = TRUE),
-    Count = n()
-  )
-
-```
-
-```{r Sales & Revenue Insights }
-top_products <- product_stats %>%
+    AvgPrice = sum(Revenue, na.rm = TRUE) / sum(Quantity, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
   arrange(desc(TotalRevenue)) %>%
   slice(1:15)
 
-ggplot(top_products, aes(x = reorder(Product, TotalRevenue), y = TotalRevenue, fill = AvgPrice)) +
+# Optionally truncate long names
+top_products$Product <- str_trunc(top_products$Product, 35)
+
+# Create interactive plot
+p <- ggplot(top_products, aes(x = reorder(Product, TotalRevenue), y = TotalRevenue, fill = AvgPrice)) +
   geom_col() +
   coord_flip() +
-  scale_fill_viridis_c(option = "C") +
+  scale_fill_viridis_c(option = "C", name = "Avg. Price") +
   labs(title = "Top 15 Products by Revenue (Color = Avg Price)",
        x = "Product", y = "Total Revenue") +
-  theme_minimal()
+  theme_minimal(base_size = 13) +
+  theme(
+    text = element_text(family = "DejaVu Sans"),
+    plot.title = element_text(face = "bold"),
+    axis.title = element_text(face = "bold")
+  )
 
+ggplotly(p)
 ```
+
 ```{r Revenue Over Time}
 df %>%
   group_by(Month) %>%
@@ -166,8 +177,9 @@ ggplot(df, aes(x = Revenue)) +
 
 ```{r Skewness and Kurtosis Summary  }
 library(moments)
-cat("Skewness of Revenue:", skewness(df$Revenue, na.rm = TRUE), "\n")
-cat("Kurtosis of Revenue:", kurtosis(df$Revenue, na.rm = TRUE), "\n")
+cat("Skewness of Revenue:", as.numeric(skewness(df$Revenue, na.rm = TRUE)), "\n")
+cat("Kurtosis of Revenue:", as.numeric(kurtosis(df$Revenue, na.rm = TRUE)), "\n")
+
 
 ```
 ```{r}
